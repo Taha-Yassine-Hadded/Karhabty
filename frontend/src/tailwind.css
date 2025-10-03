@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom theme variables */
+:root {
+  --color-theme: #ff0000;
+  --color-title: #333333;  
+  --color-body: #666666;
+  --color-white: #ffffff;
+  --color-border: #e0e0e0;
+  
+  --font-family-title: "Roboto", sans-serif;
+  --font-family-body: "Open Sans", sans-serif;
+}

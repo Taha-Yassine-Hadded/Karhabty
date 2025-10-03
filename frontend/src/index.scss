@@ -1,0 +1,20 @@
+// Tailwind CSS
+@import "./tailwind.css";
+
+@import 'primereact/resources/themes/lara-light-indigo/theme.css'; // PrimeReact theme
+@import 'primereact/resources/primereact.min.css'; // PrimeReact core styles
+@import 'primeicons/primeicons.css'; // PrimeIcons
+
+// Plugin CSS
+@import "~animate.css";
+@import "swiper/scss";
+@import "swiper/scss/navigation";
+@import "swiper/scss/pagination";
+@import "swiper/scss/thumbs";
+@import "swiper/scss/free-mode";
+@import "swiper/css/effect-fade";
+@import "rc-slider/assets/index.css";
+
+// Init main SCSS File
+@import "/public/assets/css/demo.scss";
+@import "/public/assets/sass/style.scss";
