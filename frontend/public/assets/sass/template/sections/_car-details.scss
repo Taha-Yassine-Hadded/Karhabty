@@ -1,0 +1,130 @@
+/* Car Details Page Custom Styles */
+
+// Variables
+$primary-red: #dc3545;
+$red-dark: #c82333;
+$gray-dark: #333;
+
+.car-details-area {
+  padding: 80px 0;
+  background: linear-gradient(135deg, #fff 0%, #fff5f5 100%);
+  min-height: 100vh;
+}
+
+.car-details-card {
+  background: transparent;
+}
+
+// Animations
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+// Spare Parts Tabs
+.spare-parts-tabs {
+  .animate-slideIn {
+    animation: slideIn 0.3s ease-out;
+    transform-origin: left;
+  }
+
+  .tab-content {
+    min-height: 300px;
+  }
+
+  .history-card:hover {
+    transform: translateX(5px);
+  }
+
+  .recommendation-card {
+    &:hover {
+      transform: scale(1.02);
+    }
+  }
+}
+
+.car-gallery,
+.car-details-header,
+.car-details-info,
+.car-spare-parts {
+  animation: fadeInUp 0.6s ease-out;
+  animation-fill-mode: both;
+}
+
+.car-details-header {
+  animation-delay: 0.1s;
+}
+
+.car-details-info {
+  animation-delay: 0.2s;
+}
+
+.car-spare-parts {
+  animation-delay: 0.3s;
+}
+
+// Sidebar
+.car-details-sidebar {
+  position: sticky;
+  top: 100px;
+  
+  .sidebar-card {
+    animation: fadeInUp 0.6s ease-out;
+    animation-delay: 0.4s;
+    animation-fill-mode: both;
+  }
+}
+
+// Info Cards Hover Effects
+.info-card {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-3px);
+  }
+}
+
+// Spare Parts Card
+.spare-part-card {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateX(5px);
+  }
+}
+
+// Responsive
+@media (max-width: 991px) {
+  .car-details-sidebar {
+    position: relative;
+    top: 0;
+    margin-top: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .car-details-area {
+    padding: 40px 0;
+  }
+  
+  .car-gallery {
+    img {
+      height: 300px !important;
+    }
+  }
+}

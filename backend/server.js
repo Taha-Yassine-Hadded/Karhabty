@@ -23,5 +23,8 @@ app.use("/api/auth", authRoutes);
 const adminRoutes = require("./routes/adminRoutes");
 app.use("/api/admin", adminRoutes);
 
+const carRoutes = require("./routes/carRoutes");
+app.use("/api/cars", carRoutes);
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

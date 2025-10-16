@@ -32,6 +32,10 @@
 }
 
 .main-menu {
+  position: relative;
+  z-index: 100; // Bring menu items forward
+  margin-left: 230px; // Push menu to the right, away from logo container
+  
   a {
     display: block;
     position: relative;
@@ -343,12 +347,48 @@
   .header-navbar-logo {
     margin-top: 0;
     padding: 15px 0;
-    padding-left: 60px;
     position: absolute;
     z-index: 3;
+    left: 0;
+    width: 14.2%; // Same width as logo-bg
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   }
   .menu-area {
     position: relative;
+    
+    .container {
+      max-width: 100% !important;
+      padding-left: 30px;
+      padding-right: 30px;
+    }
+    
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      margin-left: 0;
+      margin-right: 0;
+    }
+    
+    .col-auto {
+      position: relative;
+      z-index: 100; // Ensure nav items are above logo background
+      
+      &.ms-auto {
+        margin-left: auto !important;
+        padding-right: 0;
+      }
+    }
+    
     .logo-bg {
       position: absolute;
       height: calc(100% + 80px);
@@ -357,6 +397,7 @@
       left: 0;
       background: $theme-color;
       border-radius: 0 0 5px 0;
+      z-index: 1; // Keep logo background behind menu items
     }
   }
   .navbar-right-desc {
@@ -366,6 +407,8 @@
     flex-wrap: wrap;
     position: relative;
     z-index: 1000;
+    margin-left: auto; // Push to the right
+    justify-content: flex-end; // Align items to the right
     
     .navbar-right-desc-details {
       .title {

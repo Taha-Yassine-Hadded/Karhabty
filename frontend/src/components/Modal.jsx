@@ -20,7 +20,7 @@ const Modal = ({
         <div className="px-4 py-3 sm:px-6 sm:py-4 border-b border-gray-200 flex-shrink-0">
           <div className="flex items-center justify-between">
             <h3 className="text-lg sm:text-xl font-semibold text-gray-900 flex items-center">
-              <i className={`fas ${editMode ? 'fa-edit' : 'fa-plus'} mr-2 text-blue-600`}></i>
+              <i className={`fas ${editMode ? 'fa-edit' : 'fa-plus'} mr-2 text-red-600`}></i>
               <span className="truncate">{title}</span>
             </h3>
             <button
@@ -53,7 +53,7 @@ const Modal = ({
               type="submit"
               onClick={onSubmit}
               disabled={loading}
-              className="w-full sm:w-auto px-4 py-2 sm:px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center text-sm sm:text-base"
+              className="w-full sm:w-auto px-4 py-2 sm:px-6 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200 flex items-center justify-center text-sm sm:text-base disabled:bg-red-400 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <>

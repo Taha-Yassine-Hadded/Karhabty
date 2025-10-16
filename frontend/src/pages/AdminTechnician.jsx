@@ -20,7 +20,11 @@ const AdminTechnician = () => {
   const [formData, setFormData] = useState({
     name: '',
     speciality: 'mechanic',
-    cars: []
+    cars: [],
+    email: '',
+    phone: '',
+    address: '',
+    website: ''
   });
   const [formLoading, setFormLoading] = useState(false);
   const [selectedCars, setSelectedCars] = useState([]);
@@ -35,18 +39,83 @@ const AdminTechnician = () => {
     { value: 'electrician', label: 'Electrician' }
   ];
 
-  // Car brands list (static list for selection)
+    // Car brands list (comprehensive list of 100+ brands)
   const carBrandOptions = [
-    'Toyota', 'Honda', 'Ford', 'Chevrolet', 'Nissan', 
-    'BMW', 'Mercedes-Benz', 'Audi', 'Volkswagen', 'Hyundai',
-    'Kia', 'Mazda', 'Subaru', 'Lexus', 'Infiniti',
-    'Acura', 'Cadillac', 'Lincoln', 'Buick', 'GMC',
-    'Jeep', 'Ram', 'Dodge', 'Chrysler', 'Mitsubishi',
-    'Volvo', 'Jaguar', 'Land Rover', 'Porsche', 'Mini',
-    'Fiat', 'Alfa Romeo', 'Maserati', 'Ferrari', 'Lamborghini',
-    'Bentley', 'Rolls-Royce', 'Aston Martin', 'McLaren',
-    'Tesla', 'Rivian', 'Lucid', 'Polestar'
-  ].map(brand => ({ name: brand, value: brand }));
+    // American Brands
+    'Ford', 'Chevrolet', 'GMC', 'Dodge', 'Ram', 'Jeep', 
+    'Chrysler', 'Cadillac', 'Lincoln', 'Buick', 'Tesla',
+    'Rivian', 'Lucid', 'Fisker', 'Canoo', 'Lordstown',
+    
+    // Japanese Brands
+    'Toyota', 'Honda', 'Nissan', 'Mazda', 'Subaru', 
+    'Mitsubishi', 'Suzuki', 'Lexus', 'Infiniti', 'Acura',
+    'Isuzu', 'Daihatsu', 'Hino',
+    
+    // German Brands
+    'BMW', 'Mercedes-Benz', 'Audi', 'Volkswagen', 'Porsche',
+    'Mini', 'Opel', 'Smart', 'Maybach', 'Alpina',
+    
+    // Korean Brands
+    'Hyundai', 'Kia', 'Genesis', 'SsangYong', 'Daewoo',
+    
+    // British Brands
+    'Jaguar', 'Land Rover', 'Bentley', 'Rolls-Royce', 
+    'Aston Martin', 'McLaren', 'Lotus', 'Morgan', 'TVR',
+    'Vauxhall', 'MG', 'Caterham',
+    
+    // Italian Brands
+    'Ferrari', 'Lamborghini', 'Maserati', 'Alfa Romeo', 
+    'Fiat', 'Lancia', 'Pagani', 'Bugatti',
+    
+    // French Brands
+    'Peugeot', 'Renault', 'Citroën', 'DS Automobiles',
+    'Alpine', 'Venturi',
+    
+    // Swedish Brands
+    'Volvo', 'Saab', 'Polestar', 'Koenigsegg',
+    
+    // Chinese Brands
+    'BYD', 'Geely', 'Great Wall', 'Chery', 'NIO',
+    'Xpeng', 'Li Auto', 'Lynk & Co', 'MG Motor', 'GAC',
+    'Hongqi', 'Haval', 'Zeekr', 'Aiways', 'Voyah',
+    
+    // Spanish Brands
+    'SEAT', 'Cupra',
+    
+    // Czech Brands
+    'Škoda',
+    
+    // Romanian Brands
+    'Dacia',
+    
+    // Indian Brands
+    'Tata', 'Mahindra', 'Maruti Suzuki', 'Bajaj',
+    
+    // Malaysian Brands
+    'Proton', 'Perodua',
+    
+    // Australian Brands
+    'Holden',
+    
+    // Russian Brands
+    'Lada', 'UAZ', 'GAZ',
+    
+    // Luxury/Supercar Brands
+    'Koenigsegg', 'Rimac', 'Pagani', 'Spyker', 'W Motors',
+    'Hennessey', 'SSC North America', 'Zenvo',
+    
+    // Electric/New Energy Brands
+    'Faraday Future', 'Byton', 'Lightyear', 'Arrival',
+    'Nikola', 'Lordstown', 'Bollinger', 'Karma',
+    
+    // Commercial/Truck Brands
+    'Freightliner', 'Peterbilt', 'Kenworth', 'Mack',
+    'International', 'Western Star', 'Hino', 'UD Trucks',
+    
+    // Other Notable Brands
+    'Pontiac', 'Oldsmobile', 'Saturn', 'Mercury', 'Plymouth',
+    'Scion', 'Maybach', 'Datsun', 'AMC', 'DeLorean'
+  ].sort().map(brand => ({ name: brand, value: brand }));
 
   useEffect(() => {
     fetchTechnicians();
@@ -122,11 +191,18 @@ const AdminTechnician = () => {
     setFormData({
       name: technician.name || '',
       speciality: technician.speciality || 'mechanic',
-      cars: technician.cars || []
+      cars: technician.cars || [],
+      email: technician.email || '',
+      phone: technician.phone || '',
+      address: technician.address || '',
+      website: technician.website || ''
     });
     
-    // Set selected cars for editing
-    const selected = (technician.cars || []).map(car => ({ name: car, value: car }));
+    // Set selected cars for editing (ensure correct format for MultiSelect)
+    const selected = (technician.cars || []).map(car => {
+      if (typeof car === 'object' && car.value && car.name) return car;
+      return { name: car, value: car };
+    });
     setSelectedCars(selected);
     setShowModal(true);
   };
@@ -134,12 +210,11 @@ const AdminTechnician = () => {
   const handleDelete = async (technician) => {
     const result = await Swal.fire({
       title: 'Are you sure?',
-      text: `You are about to delete technician "${technician.name}". This action cannot be undone!`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#dc2626',
       cancelButtonColor: '#6b7280',
-      confirmButtonText: 'Yes, delete it!',
+      confirmButtonText: 'Delete',
       cancelButtonText: 'Cancel',
     });
 
@@ -159,7 +234,11 @@ const AdminTechnician = () => {
     setFormData({
       name: '',
       speciality: 'mechanic',
-      cars: []
+      cars: [],
+      email: '',
+      phone: '',
+      address: '',
+      website: ''
     });
     setSelectedCars([]);
   };
@@ -243,14 +322,16 @@ const AdminTechnician = () => {
       header: 'Technician Name',
       key: 'technician',
       render: (technician) => (
-        <div className="flex items-center space-x-3">
-          <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-            <span className="text-white font-semibold text-lg">
-              {technician.name.charAt(0).toUpperCase()}
-            </span>
-          </div>
+        <>
+          <div className="flex items-center space-x-3">
+            <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+              <span className="text-white font-semibold text-lg">
+                {technician.name.charAt(0).toUpperCase()}
+              </span>
+            </div>
             <div className="text-sm font-semibold text-gray-900">{technician.name}</div>
-        </div>
+          </div>
+        </>
       ),
     },
     {
@@ -401,6 +482,7 @@ const AdminTechnician = () => {
               onChange={(e) => setSelectedCars(e.value)} 
               options={carBrandOptions} 
               optionLabel="name" 
+              optionValue="value" // Ensure this matches the value property used in carBrandOptions
               display="chip"
               filter 
               filterDelay={400} 
@@ -411,6 +493,57 @@ const AdminTechnician = () => {
             <p className="text-xs text-gray-500 mt-1">
               Select the car brands this technician has expertise with
             </p>
+          </div>
+        </div>
+        {/* Contact Info Fields */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              <i className="fas fa-envelope mr-2 text-blue-600"></i>Email
+            </label>
+            <input
+              type="email"
+              value={formData.email}
+              onChange={e => setFormData({ ...formData, email: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter email address"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              <i className="fas fa-phone mr-2 text-blue-600"></i>Phone
+            </label>
+            <input
+              type="text"
+              value={formData.phone}
+              onChange={e => setFormData({ ...formData, phone: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter phone number"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              <i className="fas fa-map-marker-alt mr-2 text-blue-600"></i>Address
+            </label>
+            <input
+              type="text"
+              value={formData.address}
+              onChange={e => setFormData({ ...formData, address: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter address"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              <i className="fas fa-globe mr-2 text-blue-600"></i>Website
+            </label>
+            <input
+              type="text"
+              value={formData.website}
+              onChange={e => setFormData({ ...formData, website: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter website URL"
+            />
           </div>
         </div>
       </Modal>

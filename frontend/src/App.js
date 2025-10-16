@@ -26,6 +26,8 @@ import { Toaster } from 'react-hot-toast';
 import AdminSpareParts from "./pages/AdminSpareParts";
 import AdminSuppliers from "./pages/AdminSuppliers";
 import AdminTechnician from "./pages/AdminTechnician";
+import MyCarsPage from "./pages/MyCarsPage";
+import CarDetailsPage from "./pages/CarDetailsPage";
 
 function App() {
   return (
@@ -53,6 +55,8 @@ function App() {
           <Route exact path="/checkout" element={<CheckoutPage />} />
           <Route exact path="/wishlist" element={<WishlistPage />} />
           <Route exact path="/contact" element={<ContactPage />} />
+          <Route exact path="/my-cars" element={<MyCarsPage />} />
+          <Route exact path="/car-details/:id" element={<CarDetailsPage />} />
           
           {/* Admin Routes - Protected */}
           <Route path="/admin" element={

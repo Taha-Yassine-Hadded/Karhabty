@@ -443,19 +443,20 @@ const deleteSupplier = async (req, res) => {
 //
 const createTechnician = async (req, res) => {
   try {
-    const { name, speciality, cars } = req.body;
-    
+    const { name, speciality, cars, email, phone, address, website } = req.body;
     // Validation
     if (!name || !speciality) {
       return res.status(400).json({ msg: "Please fill all required fields (name, speciality)" });
     }
-
-    const technician = new Technician({ 
-      name: name.trim(), 
-      speciality, 
-      cars: cars || [] 
+    const technician = new Technician({
+      name: name.trim(),
+      speciality,
+      cars: cars || [],
+      email: email || '',
+      phone: phone || '',
+      address: address || '',
+      website: website || ''
     });
-    
     await technician.save();
     res.status(201).json(technician);
   } catch (err) {
@@ -492,27 +493,27 @@ const getTechnicianById = async (req, res) => {
 
 const updateTechnician = async (req, res) => {
   try {
-    const { name, speciality, cars } = req.body;
-
+    const { name, speciality, cars, email, phone, address, website } = req.body;
     // Find existing technician
     const existingTechnician = await Technician.findById(req.params.id);
     if (!existingTechnician) {
       return res.status(404).json({ msg: "Technician not found" });
     }
-
     // Prepare update data
     const updateData = {
       name: name ? name.trim() : existingTechnician.name,
       speciality: speciality || existingTechnician.speciality,
-      cars: cars !== undefined ? cars : existingTechnician.cars
+      cars: cars !== undefined ? cars : existingTechnician.cars,
+      email: email !== undefined ? email : existingTechnician.email,
+      phone: phone !== undefined ? phone : existingTechnician.phone,
+      address: address !== undefined ? address : existingTechnician.address,
+      website: website !== undefined ? website : existingTechnician.website
     };
-
     const technician = await Technician.findByIdAndUpdate(
       req.params.id,
       updateData,
       { new: true, runValidators: true }
     );
-
     res.json(technician);
   } catch (err) {
     console.error('Update technician error:', err);

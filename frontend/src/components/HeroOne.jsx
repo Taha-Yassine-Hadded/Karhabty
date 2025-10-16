@@ -22,7 +22,6 @@ const HeroOne = () => {
                 Quality Service
               </h1>
               <p className="hero-text text-white">
-                Vestibulum rhoncus nisl ac gravida porta. Mauris eu sapien lacus
               </p>
               <div className="btn-group">
                 <Link to="/about" className="btn">

@@ -125,7 +125,7 @@ const HeaderOne = () => {
           <div className="menu-area">
             <div className="header-navbar-logo">
               <Link to="/">
-                <img src="assets/img/logo-white.svg" alt="Fixturbo" />
+                <img src="assets/img/logo1.png" style={{ width: "180px", height: "auto" }}  alt="Fixturbo" />
               </Link>
             </div>
             <div className="container">
@@ -133,7 +133,7 @@ const HeaderOne = () => {
                 <div className="col-auto d-xl-none d-block">
                   <div className="header-logo">
                     <Link to="/">
-                      <img src="assets/img/logo-white.svg" alt="Fixturbo" />
+                      <img src="assets/img/logo1.png" style={{ width: "180px", height: "auto" }} alt="Fixturbo" />
                     </Link>
                   </div>
                 </div>
@@ -362,11 +362,18 @@ const HeaderOne = () => {
                           </div>
                           <ul>
                             {user.role !== 'admin' && (
-                              <li>
-                                <Link to="/profile" onClick={handleDropdownItemClick}>
-                                  <i className="fas fa-user-alt"></i> <span>Profile</span>
-                                </Link>
-                              </li>
+                              <>
+                                <li>
+                                  <Link to="/profile" onClick={handleDropdownItemClick}>
+                                    <i className="fas fa-user-alt"></i> <span>Profile</span>
+                                  </Link>
+                                </li>
+                                <li>
+                                  <Link to="/my-cars" onClick={handleDropdownItemClick}>
+                                    <i className="fas fa-car"></i> <span>My Cars</span>
+                                  </Link>
+                                </li>
+                              </>
                             )}
                             {user.role === 'admin' && (
                               <li>
@@ -677,6 +684,7 @@ const HeaderOne = () => {
                     </div>
                     <ul>
                       {user.role !== 'admin' && (
+                      <>
                       <li>
                         <NavLink
                           to="/profile"
@@ -686,6 +694,16 @@ const HeaderOne = () => {
                           <i className="fas fa-user"></i> Profile
                         </NavLink>
                       </li>
+                      <li>
+                        <NavLink
+                          to="/my-cars"
+                          className={(navData) => (navData.isActive ? "active" : "")}
+                          onClick={mobileMenu}
+                        >
+                          <i className="fas fa-car"></i> My Cars
+                        </NavLink>
+                      </li>
+                      </>
                       )}
                       {user.role === 'admin' && (
                         <li>

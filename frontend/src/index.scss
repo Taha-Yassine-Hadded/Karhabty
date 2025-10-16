@@ -18,3 +18,158 @@
 // Init main SCSS File
 @import "/public/assets/css/demo.scss";
 @import "/public/assets/sass/style.scss";
+
+// ========================================
+// ICON ALIGNMENT FIX - DO NOT REMOVE
+// Fixes icons appearing in top-left corner
+// ========================================
+
+// Fix all Font Awesome and PrimeIcons globally
+i,
+i.fa,
+i.fas,
+i.far,
+i.fab,
+i.fal,
+i.fad,
+i.pi,
+.fa,
+.fas,
+.far,
+.fab,
+.fal,
+.fad,
+.pi {
+    vertical-align: middle !important;
+    display: inline-block !important;
+}
+
+// Override Font Awesome's line-height: 1
+.fa,
+.fas,
+.far,
+.fab,
+.fal,
+.fad {
+    line-height: 1 !important;
+}
+
+// Fix icons inside all common containers
+button i,
+a i,
+.btn i,
+span i,
+div i,
+p i,
+li i,
+td i,
+th i,
+h1 i,
+h2 i,
+h3 i,
+h4 i,
+h5 i,
+h6 i {
+    vertical-align: middle !important;
+    display: inline-block !important;
+}
+
+// Ensure proper centering for icon containers
+.icon,
+[class*="icon"] {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    
+    i {
+        vertical-align: middle !important;
+    }
+}
+
+// ========================================
+// DROPDOWN MENU ICON FIX
+// Specific fix for user dropdown icons
+// ========================================
+.dropdown-menu {
+    ul {
+        li {
+            a,
+            button {
+                i {
+                    display: inline-flex !important;
+                    align-items: center !important;
+                    justify-content: center !important;
+                    vertical-align: middle !important;
+                    width: 20px !important;
+                    height: 20px !important;
+                    min-width: 20px !important;
+                    min-height: 20px !important;
+                    flex-shrink: 0 !important;
+                    transform: none !important;
+                    text-align: center !important;
+                    font-style: normal !important;
+                    direction: ltr !important;
+                    line-height: 20px !important;
+                }
+            }
+        }
+    }
+}
+
+// ========================================
+// USER AVATAR FALLBACK ICON FIX
+// Fix for the user icon in the navbar dropdown button
+// ========================================
+.user-avatar-fallback {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    
+    i {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: auto !important;
+        height: auto !important;
+        vertical-align: middle !important;
+        line-height: 1 !important;
+        transform: none !important;
+        margin: 0 auto !important;
+        position: relative !important;
+        left: 0 !important;
+        top: 0 !important;
+    }
+}
+
+// Also fix mobile user avatar icons
+.mobile-user-avatar {
+    i {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 100% !important;
+        height: 100% !important;
+        vertical-align: middle !important;
+        line-height: 1 !important;
+        transform: none !important;
+    }
+}
+
+// ========================================
+// USER PROFILE BUTTON CHEVRON FIX
+// Fix for the dropdown arrow next to username
+// ========================================
+.user-profile-btn {
+    .fa-chevron-down {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        vertical-align: middle !important;
+        transform: none !important;
+        line-height: 1 !important;
+        
+        &.rotated {
+            transform: rotate(180deg) !important;
+        }
+    }
+}
