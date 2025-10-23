@@ -7,14 +7,14 @@ RUN npm ci --only=production
 
 COPY . .
 
-# Install curl for health checks
-RUN apk add --no-cache curl
-
 FROM node:18-alpine
 
 WORKDIR /app
 
 COPY --from=builder /app .
+
+# Install curl in the final stage
+RUN apk add --no-cache curl
 
 EXPOSE 5000
 
