@@ -48,11 +48,6 @@ coverage/
 .yarnrc
 .pnpm-store
 
-# Ignore package-lock files (optional, depending on your preference)
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
-
 # Ignore frontend-specific files (if any)
 frontend/.env
 frontend/dist/
