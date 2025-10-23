@@ -26,5 +26,8 @@ app.use("/api/admin", adminRoutes);
 const carRoutes = require("./routes/carRoutes");
 app.use("/api/cars", carRoutes);
 
+const publicRoutes = require("./routes/publicRoutes");
+app.use("/api/public", publicRoutes);
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

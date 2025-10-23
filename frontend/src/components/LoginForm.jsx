@@ -140,19 +140,7 @@ const LoginForm = () => {
                 </div>
 
                 <div className="form-options">
-                  <div className="checkbox-group">
-                    <label className="checkbox-label">
-                      <input
-                        type="checkbox"
-                        name="rememberMe"
-                        checked={formData.rememberMe}
-                        onChange={handleChange}
-                        disabled={loading}
-                      />
-                      <span className="checkmark"></span>
-                      <span className="checkbox-text">Remember me</span>
-                    </label>
-                  </div>
+                  
                   <Link to="/forgot-password" className="forgot-link">
                     Forgot Password?
                   </Link>
@@ -172,21 +160,6 @@ const LoginForm = () => {
                     'Sign In'
                   )}
                 </button>
-
-                <div className="divider">
-                  <span>Or</span>
-                </div>
-
-                <div className="social-login">
-                  <button type="button" className="btn-social btn-google" disabled={loading}>
-                    <i className="fab fa-google"></i>
-                    Continue with Google
-                  </button>
-                  <button type="button" className="btn-social btn-facebook" disabled={loading}>
-                    <i className="fab fa-facebook-f"></i>
-                    Continue with Facebook
-                  </button>
-                </div>
 
                 <div className="login-footer">
                   <p>

@@ -8,10 +8,32 @@ const path = require("path");
 // @access  Private
 const getUserCars = async (req, res) => {
   try {
+    const Technician = require("../models/Technician");
     const cars = await Car.find({ owner: req.user.id })
-      .populate('spareParts.part', 'name price category')
+      .populate({
+        path: 'spareParts.part',
+        select: 'name price category lifespanMonths lifespanKm brand stock',
+        populate: {
+          path: 'suppliers',
+          select: 'name email phone address website'
+        }
+      })
       .sort({ createdAt: -1 });
-    res.json(cars);
+
+    // Add recommended technicians for each car
+    const carsWithTechnicians = await Promise.all(
+      cars.map(async (car) => {
+        const matchingTechnicians = await Technician.find({ cars: car.brand })
+          .select('name speciality email phone address website cars');
+        
+        return {
+          ...car.toObject(),
+          recommendedTechnicians: matchingTechnicians
+        };
+      })
+    );
+
+    res.json(carsWithTechnicians);
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: "Server error" });
@@ -164,12 +186,29 @@ const updateCar = async (req, res) => {
     if (brand !== undefined) car.brand = brand;
     if (model !== undefined) car.model = model;
     if (year !== undefined) car.year = year;
-    if (kilometrage !== undefined) car.kilometrage = kilometrage;
     if (fuelType !== undefined) car.fuelType = fuelType;
     
-    // Update spare parts if provided
+    // Update spare parts if provided (do this BEFORE kilometrage update)
     if (spareParts !== undefined) {
       car.spareParts = typeof spareParts === 'string' ? JSON.parse(spareParts) : spareParts;
+    }
+    
+    // Handle kilometrage update and update spare parts kilometrage accordingly
+    if (kilometrage !== undefined) {
+      const oldKilometrage = car.kilometrage || 0;
+      const newKilometrage = parseInt(kilometrage);
+      const kilometrageDiff = newKilometrage - oldKilometrage;
+      
+      // Update car kilometrage
+      car.kilometrage = newKilometrage;
+      
+      // Update spare parts kilometrage: newSparePartKm = currentSparePartKm + (newCarKm - oldCarKm)
+      if (kilometrageDiff !== 0 && car.spareParts && car.spareParts.length > 0) {
+        car.spareParts.forEach(sparePart => {
+          const currentSparePartKm = sparePart.kilometrage || 0;
+          sparePart.kilometrage = currentSparePartKm + kilometrageDiff;
+        });
+      }
     }
 
     await car.save();

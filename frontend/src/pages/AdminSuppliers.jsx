@@ -88,7 +88,6 @@ const AdminSuppliers = () => {
   const handleDelete = async (supplier) => {
     const result = await Swal.fire({
       title: 'Are you sure?',
-      text: `You are about to delete "${supplier.name}". This action cannot be undone!`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#dc2626',

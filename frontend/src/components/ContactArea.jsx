@@ -13,9 +13,9 @@ const ContactArea = () => {
                 </div>
                 <h6 className="contact-info_title">Address</h6>
                 <p className="contact-info_text">
-                  6391 Elgin St. Celina, Delaware
+                  Ariana
                 </p>
-                <p className="contact-info_text">Mirpur Dhaka,Bangladesh</p>
+                <p className="contact-info_text">Tunis</p>
               </div>
             </div>
             <div className="col-xxl-3 col-lg-4 col-md-6">
@@ -25,7 +25,7 @@ const ContactArea = () => {
                 </div>
                 <h6 className="contact-info_title">Phone Number</h6>
                 <p className="contact-info_text">
-                  <a href="tel:6295550129">(629) 555-0129</a>
+                  <a href="tel:6295550129">01254693326</a>
                 </p>
                 <p className="contact-info_text">
                   <a href="tel:01254693326">01254693326</a>
@@ -50,29 +50,18 @@ const ContactArea = () => {
                 <h6 className="contact-info_title">E-mail</h6>
                 <p className="contact-info_text">
                   <a href="mailto:michael.mitc@example.com">
-                    michael.mitc@example.com
+                    tahayassine@gmail.com
                   </a>
                 </p>
                 <p className="contact-info_text">
-                  <a href="mailto:nafiz 0121@gmail.com">nafiz 0121@gmail.com</a>
+                  <a href="mailto:tahayassine@gmail.com">tahayassine@gmail.com</a>
                 </p>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div className="space-bottom">
-        <div className="container">
-          <div className="map-sec">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3644.7310056272386!2d89.2286059153658!3d24.00527418490799!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39fe9b97badc6151%3A0x30b048c9fb2129bc!2s!5e0!3m2!1sen!2sbd!4v1651028958211!5m2!1sen!2sbd"
-              allowFullScreen=""
-              loading="lazy"
-              title="address"
-            />
-          </div>
-        </div>
-      </div>
+  
       <div className="space-bottom">
         <div className="container">
           <div className="row flex-row-reverse">

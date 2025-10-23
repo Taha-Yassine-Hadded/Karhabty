@@ -71,6 +71,8 @@ const CarDetailsMain = ({ carId }) => {
                 <CarDetailsSpareParts 
                   spareParts={car.spareParts} 
                   recommendedTechnicians={car.recommendedTechnicians || []} 
+                  currentCarKilometrage={car.kilometrage}
+                  carId={car._id}
                 />
               )}
             </div>

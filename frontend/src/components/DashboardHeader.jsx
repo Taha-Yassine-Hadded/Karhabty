@@ -21,16 +21,18 @@ const DashboardHeader = ({
             {subtitle}
           </p>
         </div>
-        <div className="flex-shrink-0">
-          <button
-            onClick={onButtonClick}
-            className={`bg-white ${buttonTextColor} hover:bg-blue-50 px-4 py-2 sm:px-6 sm:py-3 rounded-lg flex items-center justify-center font-semibold transition-colors duration-200 shadow-lg w-full sm:w-auto text-sm sm:text-base`}
-          >
-            <i className={`fas ${icon} mr-2`}></i>
-            <span className="hidden sm:inline">{buttonText}</span>
-            <span className="sm:hidden">Add</span>
-          </button>
-        </div>
+        {buttonText && onButtonClick && (
+          <div className="flex-shrink-0">
+            <button
+              onClick={onButtonClick}
+              className={`bg-white ${buttonTextColor} hover:bg-blue-50 px-4 py-2 sm:px-6 sm:py-3 rounded-lg flex items-center justify-center font-semibold transition-colors duration-200 shadow-lg w-full sm:w-auto text-sm sm:text-base`}
+            >
+              <i className={`fas ${icon} mr-2`}></i>
+              <span className="hidden sm:inline">{buttonText}</span>
+              <span className="sm:hidden">Add</span>
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

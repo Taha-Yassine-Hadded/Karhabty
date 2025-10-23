@@ -1,24 +1,76 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-const SparePartsRecommendations = ({ spareParts, recommendedTechnicians = [] }) => {
+const SparePartsRecommendations = ({ spareParts, recommendedTechnicians = [], currentCarKilometrage }) => {
   const [expandedPart, setExpandedPart] = useState(null);
 
-  const calculateRecommendation = (sparePart, changeMonth, changeYear) => {
-    if (!changeMonth || !changeYear || !sparePart?.lifespanMonths) {
+  const calculateRecommendation = (sparePart, changeMonth, changeYear, kilometrage) => {
+    if (!changeMonth || !changeYear) {
       return null;
     }
 
-    const changeDate = new Date(changeYear, changeMonth - 1);
-    const now = new Date();
-    const monthsSinceChange = (now.getFullYear() - changeDate.getFullYear()) * 12 + 
-                              (now.getMonth() - changeDate.getMonth());
+    let timeRecommendation = null;
+    let kilometrageRecommendation = null;
 
-    const lifespanMonths = sparePart.lifespanMonths;
-    const percentUsed = (monthsSinceChange / lifespanMonths) * 100;
+    // Time-based recommendation
+    if (sparePart?.lifespanMonths) {
+      const changeDate = new Date(changeYear, changeMonth - 1);
+      const now = new Date();
+      const monthsSinceChange = (now.getFullYear() - changeDate.getFullYear()) * 12 + 
+                                (now.getMonth() - changeDate.getMonth());
 
-    // Determine status
-    if (monthsSinceChange >= lifespanMonths) {
+      const lifespanMonths = sparePart.lifespanMonths;
+      const timePercentUsed = (monthsSinceChange / lifespanMonths) * 100;
+
+      timeRecommendation = {
+        percentUsed: Math.min(Math.round(timePercentUsed), 100),
+        isOverdue: monthsSinceChange >= lifespanMonths,
+        monthsSinceChange,
+        lifespanMonths
+      };
+    }
+
+    // Kilometrage-based recommendation
+    if (sparePart?.lifespanKm && kilometrage !== undefined) {
+      const sparePartKilometrage = kilometrage || 0; // How much the spare part has been used
+      const lifespanKm = sparePart.lifespanKm;
+      const kmPercentUsed = (sparePartKilometrage / lifespanKm) * 100;
+
+      kilometrageRecommendation = {
+        percentUsed: Math.min(Math.round(kmPercentUsed), 100),
+        isOverdue: sparePartKilometrage >= lifespanKm,
+        kmSinceChange: sparePartKilometrage,
+        lifespanKm
+      };
+    }
+
+    // If no recommendations available, return null
+    if (!timeRecommendation && !kilometrageRecommendation) {
+      return null;
+    }
+
+    // Determine the most critical recommendation
+    let maxPercentUsed = 0;
+    let recommendationType = '';
+
+    if (timeRecommendation) {
+      maxPercentUsed = Math.max(maxPercentUsed, timeRecommendation.percentUsed);
+      if (timeRecommendation.percentUsed >= maxPercentUsed) {
+        recommendationType = 'time';
+      }
+    }
+
+    if (kilometrageRecommendation) {
+      maxPercentUsed = Math.max(maxPercentUsed, kilometrageRecommendation.percentUsed);
+      if (kilometrageRecommendation.percentUsed >= maxPercentUsed) {
+        recommendationType = 'kilometrage';
+      }
+    }
+
+    // Determine status based on highest percentage
+    const isOverdue = (timeRecommendation?.isOverdue) || (kilometrageRecommendation?.isOverdue);
+    
+    if (isOverdue || maxPercentUsed >= 100) {
       return {
         status: 'critical',
         message: 'Replacement Overdue!',
@@ -26,30 +78,33 @@ const SparePartsRecommendations = ({ spareParts, recommendedTechnicians = [] }) 
         color: 'red',
         icon: 'fa-exclamation-triangle',
         percentUsed: 100,
-        monthsSinceChange,
-        lifespanMonths
+        recommendationType,
+        timeRecommendation,
+        kilometrageRecommendation
       };
-    } else if (percentUsed >= 80) {
+    } else if (maxPercentUsed >= 80) {
       return {
         status: 'warning',
         message: 'Replacement Recommended Soon',
         description: 'This part is approaching the end of its lifespan. Plan for replacement.',
         color: 'orange',
         icon: 'fa-exclamation-circle',
-        percentUsed: Math.round(percentUsed),
-        monthsSinceChange,
-        lifespanMonths
+        percentUsed: Math.round(maxPercentUsed),
+        recommendationType,
+        timeRecommendation,
+        kilometrageRecommendation
       };
-    } else if (percentUsed >= 50) {
+    } else if (maxPercentUsed >= 50) {
       return {
         status: 'caution',
         message: 'Monitor Condition',
         description: 'This part is in the middle of its lifespan. Regular monitoring recommended.',
         color: 'yellow',
         icon: 'fa-info-circle',
-        percentUsed: Math.round(percentUsed),
-        monthsSinceChange,
-        lifespanMonths
+        percentUsed: Math.round(maxPercentUsed),
+        recommendationType,
+        timeRecommendation,
+        kilometrageRecommendation
       };
     } else {
       return {
@@ -58,9 +113,10 @@ const SparePartsRecommendations = ({ spareParts, recommendedTechnicians = [] }) 
         description: 'This part is still within its optimal lifespan. No action needed.',
         color: 'green',
         icon: 'fa-check-circle',
-        percentUsed: Math.round(percentUsed),
-        monthsSinceChange,
-        lifespanMonths
+        percentUsed: Math.round(maxPercentUsed),
+        recommendationType,
+        timeRecommendation,
+        kilometrageRecommendation
       };
     }
   };
@@ -107,7 +163,7 @@ const SparePartsRecommendations = ({ spareParts, recommendedTechnicians = [] }) 
     .map((sp, index) => ({
       ...sp,
       index,
-      recommendation: calculateRecommendation(sp.part, sp.changeMonth, sp.changeYear)
+      recommendation: calculateRecommendation(sp.part, sp.changeMonth, sp.changeYear, sp.kilometrage)
     }))
     .filter(sp => sp.recommendation !== null);
 
@@ -131,7 +187,7 @@ const SparePartsRecommendations = ({ spareParts, recommendedTechnicians = [] }) 
         <>
           {/* Summary Alert */}
           {criticalParts.length > 0 && (
-            <div className="mb-6 p-5 bg-gradient-to-r from-red-100 to-orange-100 border-2 border-red-300 rounded-xl shadow-md animate-pulse">
+            <div className="mb-6 p-4 bg-gradient-to-r from-red-100 to-orange-100 border-2 border-red-300 rounded-xl shadow-md animate-pulse">
               <div className="flex items-center gap-3">
                 <i className="fas fa-bell text-red-600 text-2xl"></i>
                 <div className="flex-1">
@@ -186,29 +242,46 @@ const SparePartsRecommendations = ({ spareParts, recommendedTechnicians = [] }) 
                               style={{ width: `${rec.percentUsed}%` }}
                             ></div>
                           </div>
-                          <div className="flex justify-between text-xs text-gray-500 mt-1">
-                            <span>{rec.monthsSinceChange} months used</span>
-                            <span>{rec.lifespanMonths} months total</span>
+                          <div className="text-xs text-gray-500 mt-1 space-y-1">
+                            {rec.timeRecommendation && (
+                              <div className="flex justify-between">
+                                <span><i className="fas fa-clock mr-1"></i>{rec.timeRecommendation.monthsSinceChange} months used</span>
+                                <span>{rec.timeRecommendation.lifespanMonths} months total</span>
+                              </div>
+                            )}
+                            {rec.kilometrageRecommendation && (
+                              <div className="flex justify-between">
+                                <span><i className="fas fa-road mr-1"></i>{rec.kilometrageRecommendation.kmSinceChange?.toLocaleString() || 0} km used</span>
+                                <span>{rec.kilometrageRecommendation.lifespanKm?.toLocaleString() || 0} km total</span>
+                              </div>
+                            )}
+                            {rec.recommendationType && (
+                              <div className="text-xs text-gray-400 italic">
+                                Primary recommendation based on: {rec.recommendationType === 'time' ? 'Time usage' : 'Kilometrage usage'}
+                              </div>
+                            )}
                           </div>
                         </div>
 
-                        {/* Expand Button */}
-                        <button
-                          onClick={() => toggleExpand(sp.index)}
-                          className="text-sm font-semibold text-red-600 hover:text-red-700 flex items-center gap-1 transition-colors"
-                        >
-                          {isExpanded ? (
-                            <>
-                              <span>Hide Details</span>
-                              <i className="fas fa-chevron-up"></i>
-                            </>
-                          ) : (
-                            <>
-                              <span>View Options</span>
-                              <i className="fas fa-chevron-down"></i>
-                            </>
-                          )}
-                        </button>
+                        {/* Expand Button - Only show if not in good condition */}
+                        {rec.status !== 'good' && (
+                          <button
+                            onClick={() => toggleExpand(sp.index)}
+                            className="text-sm font-semibold text-red-600 hover:text-red-700 flex items-center gap-1 transition-colors"
+                          >
+                            {isExpanded ? (
+                              <>
+                                <span>Hide Details</span>
+                                <i className="fas fa-chevron-up"></i>
+                              </>
+                            ) : (
+                              <>
+                                <span>View Options</span>
+                                <i className="fas fa-chevron-down"></i>
+                              </>
+                            )}
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -226,14 +299,6 @@ const SparePartsRecommendations = ({ spareParts, recommendedTechnicians = [] }) 
 
                       {/* Action Buttons */}
                       <div className="space-y-3">
-                        {/* Shop Button - Primary */}
-                        <Link
-                          to="/shop"
-                          className="block w-full px-4 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-all shadow-md hover:shadow-lg text-center"
-                        >
-                          <i className="fas fa-store mr-2"></i>
-                          Browse Spare Parts Store
-                        </Link>
 
                         {/* Suppliers Section */}
                         {sp.part?.suppliers && sp.part.suppliers.length > 0 && (

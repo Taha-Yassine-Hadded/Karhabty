@@ -8,12 +8,12 @@ const AboutOne = () => {
         <img
           className="about1-shape-img-1 spin"
           src="assets/img/normal/about_shape1-2.svg"
-          alt="Fixturbo"
+          alt="Karhabty"
         />
         <img
           className="about1-shape-img-2 spin2"
           src="assets/img/normal/about_shape1-1.svg"
-          alt="Fixturbo"
+          alt="Karhabty"
         />
       </div>
       <div className="container">
@@ -21,10 +21,10 @@ const AboutOne = () => {
           <div className="col-xl-6">
             <div className="about-thumb1 mb-40 mb-xl-0">
               <div className="about-img-1">
-                <img src="/assets/img/normal/about_1-1.png" alt="Fixturbo" />
+                <img src="/assets/img/normal/about_1-1.png" alt="Karhabty" />
               </div>
               <div className="about-img-2">
-                <img src="/assets/img/normal/about_1-2.png" alt="Fixturbo" />
+                <img src="/assets/img/normal/about_1-2.png" alt="Karhabty" />
               </div>
             </div>
           </div>
@@ -36,8 +36,7 @@ const AboutOne = () => {
                   Where Expertise Meets Every Engine
                 </h2>
                 <p className="sec-text">
-                  Et purus duis sollicitudin dignissim habitant. Egestas nulla
-                  quis venenatis cras sed eu massa eu faucibus. Urna fusce
+                  At Karhabty, we combine technology and automotive expertise to help you maintain your vehicle with confidence. Our system tracks mileage and spare part lifespan to recommend the right time for replacements — keeping your car reliable and safe on every journey.
                 </p>
               </div>
               <div className="row gy-4 justify-content-xl-between justify-content-end align-items-center flex-row-reverse">
@@ -51,7 +50,7 @@ const AboutOne = () => {
                     >
                       <img src="assets/img/icon/about_icon1-1.svg" alt="Fixturbo" />
                       <h3 className="about-year-wrap-title">
-                        <span className="counter-number">25</span>+
+                        <span className="counter-number">8</span>+
                       </h3>
                       <p className="about-year-wrap-text">
                         Years of experience
@@ -76,7 +75,7 @@ const AboutOne = () => {
                       </li>
                       <li>
                         <i className="fas fa-check-circle" />
-                        Quick and Efficient Car Repairs
+                        Quick Car Repairs Recommendations
                       </li>
                     </ul>
                   </div>

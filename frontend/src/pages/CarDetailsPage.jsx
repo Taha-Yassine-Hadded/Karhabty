@@ -5,10 +5,11 @@ import FooterAreaOne from "../components/FooterAreaOne";
 import Breadcrumb from "../components/Breadcrumb";
 import CarDetailsMain from "../components/CarDetailsMain";
 import Preloader from "../helper/Preloader";
+import SubscribeOne from "../components/SubscribeOne";
 
 const CarDetailsPage = () => {
   const { id } = useParams();
-  const [active, setActive] = useState(true);
+  let [active, setActive] = useState(true);
 
   useEffect(() => {
     setTimeout(function () {
@@ -29,6 +30,9 @@ const CarDetailsPage = () => {
 
       {/* Car Details */}
       <CarDetailsMain carId={id} />
+
+       {/* Subscribe One */}
+      <SubscribeOne />
 
       {/* Footer Area One */}
       <FooterAreaOne />

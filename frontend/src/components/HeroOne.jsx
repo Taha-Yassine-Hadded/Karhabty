@@ -12,11 +12,11 @@ const HeroOne = () => {
         <div className="row flex-row-reverse">
           <div className="col-xl-6">
             <div className="hero-style1">
-              <span className="sub-title text-white">Growth Accelerator</span>
+              <span className="sub-title text-white">Your Smart Car Assistant</span>
               <h1 className="hero-title text-white">
                 Gear Up{" "}
                 <span>
-                  <img src="assets/img/hero/hero_shape_1.png" alt="Fixturbo" />
+                  <img src="assets/img/hero/hero_shape_1.png" alt="Karhabty" />
                   For Great
                 </span>{" "}
                 Quality Service
@@ -27,8 +27,8 @@ const HeroOne = () => {
                 <Link to="/about" className="btn">
                   Learn About Us
                 </Link>
-                <Link to="/service" className="btn style-border">
-                  Our Services
+                <Link to="/contact" className="btn style-border">
+                  Contact Us
                 </Link>
               </div>
             </div>

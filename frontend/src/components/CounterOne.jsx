@@ -19,8 +19,7 @@ const CounterOne = () => {
                             {({ isVisible }) =>
                               isVisible && (
                                 <span className="counter-number">
-                                  <CountUp delay={0} start={0} end={2} />
-                                  k+
+                                  <CountUp delay={0} start={0} end={3} />
                                 </span>
                               )
                             }
@@ -44,7 +43,7 @@ const CounterOne = () => {
                             {({ isVisible }) =>
                               isVisible && (
                                 <span className="counter-number">
-                                  <CountUp delay={0} start={0} end={8} />
+                                  <CountUp delay={0} start={0} end={5} />
                                   k+
                                 </span>
                               )
@@ -70,7 +69,6 @@ const CounterOne = () => {
                               isVisible && (
                                 <span className="counter-number">
                                   <CountUp delay={0} start={0} end={200} />
-                                  k+
                                 </span>
                               )
                             }
@@ -94,7 +92,7 @@ const CounterOne = () => {
                             {({ isVisible }) =>
                               isVisible && (
                                 <span className="counter-number">
-                                  <CountUp delay={0} start={0} end={9} />
+                                  <CountUp delay={0} start={0} end={5} />
                                   k+
                                 </span>
                               )
@@ -146,7 +144,7 @@ const CounterOne = () => {
                     <h6 className="title text-white">Requesting A Call:</h6>
                     <h4 className="link">
                       <a className="text-white" href="tel:6295550129">
-                        (629) 555-0129
+                        12 3456 78
                       </a>
                     </h4>
                   </div>

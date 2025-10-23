@@ -26,8 +26,12 @@ import { Toaster } from 'react-hot-toast';
 import AdminSpareParts from "./pages/AdminSpareParts";
 import AdminSuppliers from "./pages/AdminSuppliers";
 import AdminTechnician from "./pages/AdminTechnician";
+import AdminCars from "./pages/AdminCars";
 import MyCarsPage from "./pages/MyCarsPage";
 import CarDetailsPage from "./pages/CarDetailsPage";
+import RecommendationsPage from "./pages/RecommendationsPage";
+import SuppliersPage from "./pages/SuppliersPage";
+import TechniciansPage from "./pages/TechniciansPage";
 
 function App() {
   return (
@@ -57,6 +61,9 @@ function App() {
           <Route exact path="/contact" element={<ContactPage />} />
           <Route exact path="/my-cars" element={<MyCarsPage />} />
           <Route exact path="/car-details/:id" element={<CarDetailsPage />} />
+          <Route exact path="/recommendations" element={<RecommendationsPage />} />
+          <Route exact path="/suppliers" element={<SuppliersPage />} />
+          <Route exact path="/technicians" element={<TechniciansPage />} />
           
           {/* Admin Routes - Protected */}
           <Route path="/admin" element={
@@ -82,6 +89,11 @@ function App() {
           <Route path="/admin/technicians" element={
             <AdminRoute>
               <AdminTechnician />
+            </AdminRoute>
+          } />
+          <Route path="/admin/cars" element={
+            <AdminRoute>
+              <AdminCars />
             </AdminRoute>
           } />
         </Routes>

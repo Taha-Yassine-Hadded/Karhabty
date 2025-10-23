@@ -11,7 +11,8 @@ const carSchema = new mongoose.Schema({
   spareParts: [{
     part: { type: mongoose.Schema.Types.ObjectId, ref: "SparePart", required: true },
     changeMonth: { type: Number, required: true, min: 1, max: 12 },
-    changeYear: { type: Number, required: true, min: 2000, max: new Date().getFullYear() + 1 }
+    changeYear: { type: Number, required: true, min: 2000, max: new Date().getFullYear() + 1 },
+    kilometrage: { type: Number, default: 0, min: 0 } // Kilometrage when spare part was added/changed
   }]
 }, { timestamps: true });
 

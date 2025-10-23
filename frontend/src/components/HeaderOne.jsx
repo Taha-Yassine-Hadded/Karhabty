@@ -6,6 +6,7 @@ const HeaderOne = () => {
   const [scroll, setScroll] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [user, setUser] = useState(null);
+  const [showLoginBanner, setShowLoginBanner] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -13,8 +14,20 @@ const HeaderOne = () => {
     // Check if user is logged in
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
+    const bannerDismissed = localStorage.getItem('loginBannerDismissed');
+    const currentPath = location.pathname;
+    
+    // Hide banner on login and signup pages
+    const isAuthPage = currentPath === '/login' || currentPath === '/signup';
+    
     if (token && userData) {
       setUser(JSON.parse(userData));
+      setShowLoginBanner(false); // Hide banner if user is logged in
+    } else if (isAuthPage) {
+      setShowLoginBanner(false); // Hide banner on login/signup pages
+    } else {
+      // Show banner only if user is not logged in, hasn't dismissed it, and not on auth pages
+      setShowLoginBanner(bannerDismissed !== 'true');
     }
 
     var offCanvasNav = document.getElementById("offcanvas-navigation");
@@ -55,7 +68,7 @@ const HeaderOne = () => {
       }
       return () => (window.onscroll = null);
     };
-  }, []);
+  }, [location.pathname]);
 
   const mobileMenu = () => {
     setActive(!active);
@@ -104,6 +117,11 @@ const HeaderOne = () => {
     setShowUserDropdown(false);
   };
 
+  const handleBannerDismiss = () => {
+    setShowLoginBanner(false);
+    localStorage.setItem('loginBannerDismissed', 'true');
+  };
+
   // Determine button text and link based on current route and user status
   const isLoginPage = location.pathname === "/login";
   const isSignupPage = location.pathname === "/signup";
@@ -125,7 +143,7 @@ const HeaderOne = () => {
           <div className="menu-area">
             <div className="header-navbar-logo">
               <Link to="/">
-                <img src="assets/img/logo1.png" style={{ width: "180px", height: "auto" }}  alt="Fixturbo" />
+                <img src="/assets/img/logo1.png" style={{ width: "180px", height: "auto" }}  alt="Fixturbo" />
               </Link>
             </div>
             <div className="container">
@@ -133,7 +151,7 @@ const HeaderOne = () => {
                 <div className="col-auto d-xl-none d-block">
                   <div className="header-logo">
                     <Link to="/">
-                      <img src="assets/img/logo1.png" style={{ width: "180px", height: "auto" }} alt="Fixturbo" />
+                      <img src="/assets/img/logo1.png" style={{ width: "180px", height: "auto" }} alt="Fixturbo" />
                     </Link>
                   </div>
                 </div>
@@ -150,6 +168,50 @@ const HeaderOne = () => {
                           Home
                         </NavLink>
                       </li>
+                      {user && user.role !== 'admin' && (
+                        <>
+                          <li>
+                            <NavLink
+                              to="/my-cars"
+                              className={(navData) =>
+                                navData.isActive ? "active" : ""
+                              }
+                            >
+                              Cars
+                            </NavLink>
+                          </li>
+                          <li>
+                            <NavLink
+                              to="/recommendations"
+                              className={(navData) =>
+                                navData.isActive ? "active" : ""
+                              }
+                            >
+                              Recommendations
+                            </NavLink>
+                          </li>
+                        </>
+                      )}
+                      <li>
+                        <NavLink
+                          to="/suppliers"
+                          className={(navData) =>
+                            navData.isActive ? "active" : ""
+                          }
+                        >
+                          Our Suppliers
+                        </NavLink>
+                      </li>
+                      <li>
+                        <NavLink
+                          to="/technicians"
+                          className={(navData) =>
+                            navData.isActive ? "active" : ""
+                          }
+                        >
+                          Our Technicians
+                        </NavLink>
+                      </li>
                       <li>
                         <NavLink
                           to="/about"
@@ -159,156 +221,6 @@ const HeaderOne = () => {
                         >
                           About Us
                         </NavLink>
-                      </li>
-                      <li className="menu-item-has-children">
-                        <Link to="#">Services</Link>
-                        <ul className="sub-menu">
-                          <li>
-                            <NavLink
-                              to="/service"
-                              className={(navData) =>
-                                navData.isActive ? "active" : ""
-                              }
-                            >
-                              Service
-                            </NavLink>
-                          </li>
-                          <li>
-                            <NavLink
-                              to="/service-details"
-                              className={(navData) =>
-                                navData.isActive ? "active" : ""
-                              }
-                            >
-                              Service Details
-                            </NavLink>
-                          </li>
-                        </ul>
-                      </li>
-                      <li className="menu-item-has-children">
-                        <Link to="#">Projects</Link>
-                        <ul className="sub-menu">
-                          <li>
-                            <NavLink
-                              to="/project"
-                              className={(navData) =>
-                                navData.isActive ? "active" : ""
-                              }
-                            >
-                              Projects
-                            </NavLink>
-                          </li>
-                          <li>
-                            <NavLink
-                              to="/project-details"
-                              className={(navData) =>
-                                navData.isActive ? "active" : ""
-                              }
-                            >
-                              Projects Details
-                            </NavLink>
-                          </li>
-                        </ul>
-                      </li>
-                      <li className="menu-item-has-children">
-                        <Link to="#">Blog</Link>
-                        <ul className="sub-menu">
-                          <li>
-                            <NavLink
-                              to="/blog"
-                              className={(navData) =>
-                                navData.isActive ? "active" : ""
-                              }
-                            >
-                              Blog
-                            </NavLink>
-                          </li>
-                          <li>
-                            <NavLink
-                              to="/blog-details"
-                              className={(navData) =>
-                                navData.isActive ? "active" : ""
-                              }
-                            >
-                              Blog Details
-                            </NavLink>
-                          </li>
-                        </ul>
-                      </li>
-                      <li className="menu-item-has-children">
-                        <Link to="#">Pages</Link>
-                        <ul className="sub-menu">
-                          <li>
-                            <NavLink
-                              to="/team"
-                              className={(navData) =>
-                                navData.isActive ? "active" : ""
-                              }
-                            >
-                              Team Page
-                            </NavLink>
-                          </li>
-                          <li>
-                            <NavLink
-                              to="/team-details"
-                              className={(navData) =>
-                                navData.isActive ? "active" : ""
-                              }
-                            >
-                              Team Details
-                            </NavLink>
-                          </li>
-                          <li>
-                            <NavLink
-                              to="/shop"
-                              className={(navData) =>
-                                navData.isActive ? "active" : ""
-                              }
-                            >
-                              Shop Page
-                            </NavLink>
-                          </li>
-                          <li>
-                            <NavLink
-                              to="/shop-details"
-                              className={(navData) =>
-                                navData.isActive ? "active" : ""
-                              }
-                            >
-                              Shop Details
-                            </NavLink>
-                          </li>
-                          <li>
-                            <NavLink
-                              to="/cart"
-                              className={(navData) =>
-                                navData.isActive ? "active" : ""
-                              }
-                            >
-                              Cart
-                            </NavLink>
-                          </li>
-                          <li>
-                            <NavLink
-                              to="/checkout"
-                              className={(navData) =>
-                                navData.isActive ? "active" : ""
-                              }
-                            >
-                              Checkout
-                            </NavLink>
-                          </li>
-                          <li>
-                            <NavLink
-                              to="/wishlist"
-                              className={(navData) =>
-                                navData.isActive ? "active" : ""
-                              }
-                            >
-                              Wishlist
-                            </NavLink>
-                          </li>
-                        </ul>
                       </li>
                       <li>
                         <NavLink
@@ -364,13 +276,23 @@ const HeaderOne = () => {
                             {user.role !== 'admin' && (
                               <>
                                 <li>
-                                  <Link to="/profile" onClick={handleDropdownItemClick}>
-                                    <i className="fas fa-user-alt"></i> <span>Profile</span>
+                                  <Link to="/my-cars" onClick={handleDropdownItemClick}>
+                                    <i className="fas fa-car"></i> <span>My Cars</span>
                                   </Link>
                                 </li>
                                 <li>
-                                  <Link to="/my-cars" onClick={handleDropdownItemClick}>
-                                    <i className="fas fa-car"></i> <span>My Cars</span>
+                                  <Link to="/recommendations" onClick={handleDropdownItemClick}>
+                                    <i className="fas fa-lightbulb"></i> <span>My Recommendations</span>
+                                  </Link>
+                                </li>
+                                <li>
+                                  <Link to="/suppliers" onClick={handleDropdownItemClick}>
+                                    <i className="fas fa-building"></i> <span>Our Suppliers</span>
+                                  </Link>
+                                </li>
+                                <li>
+                                  <Link to="/technicians" onClick={handleDropdownItemClick}>
+                                    <i className="fas fa-wrench"></i> <span>Our Technicians</span>
                                   </Link>
                                 </li>
                               </>
@@ -393,7 +315,7 @@ const HeaderOne = () => {
                       </div>
                     ) : (
                       authButton && (
-                        <Link to={authButton.link} className="btn">
+                        <Link to={authButton.link} className="btn d-none d-lg-inline-block">
                           {authButton.text}
                         </Link>
                       )
@@ -411,7 +333,7 @@ const HeaderOne = () => {
           <div className="mobile-menu-area">
             <div className="mobile-logo">
               <Link to="/">
-                <img src="assets/img/logo.svg" alt="Fixturbo" />
+                <img src="/assets/img/logo1.png" alt="Karhabty" />
               </Link>
               <button className="menu-toggle" onClick={mobileMenu}>
                 <i className="fa fa-times" />
@@ -430,235 +352,52 @@ const HeaderOne = () => {
                 </li>
                 <li>
                   <NavLink
+                    to="/suppliers"
+                    className={(navData) => (navData.isActive ? "active" : "")}
+                    onClick={mobileMenu}
+                  >
+                    Suppliers
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/technicians"
+                    className={(navData) => (navData.isActive ? "active" : "")}
+                    onClick={mobileMenu}
+                  >
+                    Technicians
+                  </NavLink>
+                </li>
+                {user && user.role !== 'admin' && (
+                  <>
+                    <li>
+                      <NavLink
+                        to="/my-cars"
+                        className={(navData) => (navData.isActive ? "active" : "")}
+                        onClick={mobileMenu}
+                      >
+                        Cars
+                      </NavLink>
+                    </li>
+                    <li>
+                      <NavLink
+                        to="/recommendations"
+                        className={(navData) => (navData.isActive ? "active" : "")}
+                        onClick={mobileMenu}
+                      >
+                        Recommendations
+                      </NavLink>
+                    </li>
+                  </>
+                )}
+                <li>
+                  <NavLink
                     to="/about"
                     className={(navData) => (navData.isActive ? "active" : "")}
                     onClick={mobileMenu}
                   >
                     About
                   </NavLink>
-                </li>
-                <li className="menu-item-has-children submenu-item-has-children">
-                  <Link to="#">Pages</Link>
-                  <ul className="sub-menu submenu-class">
-                    <li>
-                      <NavLink
-                        to="/team"
-                        className={(navData) =>
-                          navData.isActive ? "active" : ""
-                        }
-                        onClick={mobileMenu}
-                      >
-                        Team Page
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink
-                        to="/team-details"
-                        className={(navData) =>
-                          navData.isActive ? "active" : ""
-                        }
-                        onClick={mobileMenu}
-                      >
-                        Team Details
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink
-                        to="/shop"
-                        className={(navData) =>
-                          navData.isActive ? "active" : ""
-                        }
-                        onClick={mobileMenu}
-                      >
-                        Shop Page
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink
-                        to="/shop-details"
-                        className={(navData) =>
-                          navData.isActive ? "active" : ""
-                        }
-                        onClick={mobileMenu}
-                      >
-                        Shop Details
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink
-                        to="/cart"
-                        className={(navData) =>
-                          navData.isActive ? "active" : ""
-                        }
-                        onClick={mobileMenu}
-                      >
-                        Cart
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink
-                        to="/checkout"
-                        className={(navData) =>
-                          navData.isActive ? "active" : ""
-                        }
-                        onClick={mobileMenu}
-                      >
-                        Checkout
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink
-                        to="/wishlist"
-                        className={(navData) =>
-                          navData.isActive ? "active" : ""
-                        }
-                        onClick={mobileMenu}
-                      >
-                        Wishlist
-                      </NavLink>
-                    </li>
-                  </ul>
-                </li>
-                <li className="menu-item-has-children submenu-item-has-children">
-                  <Link to="#">Project</Link>
-                  <ul className="sub-menu submenu-class">
-                    <li>
-                      <NavLink
-                        to="/project"
-                        className={(navData) =>
-                          navData.isActive ? "active" : ""
-                        }
-                        onClick={mobileMenu}
-                      >
-                        Projects
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink
-                        to="/project-details"
-                        className={(navData) =>
-                          navData.isActive ? "active" : ""
-                        }
-                        onClick={mobileMenu}
-                      >
-                        Project Details
-                      </NavLink>
-                    </li>
-                  </ul>
-                </li>
-                <li className="menu-item-has-children submenu-item-has-children">
-                  <Link to="#">Service</Link>
-                  <ul className="sub-menu submenu-class">
-                    <li>
-                      <NavLink
-                        to="/service"
-                        className={(navData) =>
-                          navData.isActive ? "active" : ""
-                        }
-                        onClick={mobileMenu}
-                      >
-                        Service
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink
-                        to="/service-details"
-                        className={(navData) =>
-                          navData.isActive ? "active" : ""
-                        }
-                        onClick={mobileMenu}
-                      >
-                        Service Details
-                      </NavLink>
-                    </li>
-                  </ul>
-                </li>
-                <li className="menu-item-has-children submenu-item-has-children">
-                  <Link to="#">Shop</Link>
-                  <ul className="sub-menu submenu-class">
-                    <li>
-                      <NavLink
-                        to="/shop"
-                        className={(navData) =>
-                          navData.isActive ? "active" : ""
-                        }
-                        onClick={mobileMenu}
-                      >
-                        Shop
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink
-                        to="/shop-details"
-                        className={(navData) =>
-                          navData.isActive ? "active" : ""
-                        }
-                        onClick={mobileMenu}
-                      >
-                        Shop Details
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink
-                        to="/cart"
-                        className={(navData) =>
-                          navData.isActive ? "active" : ""
-                        }
-                        onClick={mobileMenu}
-                      >
-                        Cart
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink
-                        to="/checkout"
-                        className={(navData) =>
-                          navData.isActive ? "active" : ""
-                        }
-                        onClick={mobileMenu}
-                      >
-                        Checkout
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink
-                        to="/wishlist"
-                        className={(navData) =>
-                          navData.isActive ? "active" : ""
-                        }
-                        onClick={mobileMenu}
-                      >
-                        Wishlist
-                      </NavLink>
-                    </li>
-                  </ul>
-                </li>
-                <li className="menu-item-has-children submenu-item-has-children">
-                  <Link to="#">Blog</Link>
-                  <ul className="sub-menu submenu-class">
-                    <li>
-                      <NavLink
-                        to="/blog"
-                        className={(navData) =>
-                          navData.isActive ? "active" : ""
-                        }
-                        onClick={mobileMenu}
-                      >
-                        Blog
-                      </NavLink>
-                    </li>
-                    <li>
-                      <NavLink
-                        to="/blog-details"
-                        className={(navData) =>
-                          navData.isActive ? "active" : ""
-                        }
-                        onClick={mobileMenu}
-                      >
-                        Blog Details
-                      </NavLink>
-                    </li>
-                  </ul>
                 </li>
                 <li>
                   <NavLink
@@ -687,20 +426,20 @@ const HeaderOne = () => {
                       <>
                       <li>
                         <NavLink
-                          to="/profile"
-                          className={(navData) => (navData.isActive ? "active" : "")}
-                          onClick={mobileMenu}
-                        >
-                          <i className="fas fa-user"></i> Profile
-                        </NavLink>
-                      </li>
-                      <li>
-                        <NavLink
                           to="/my-cars"
                           className={(navData) => (navData.isActive ? "active" : "")}
                           onClick={mobileMenu}
                         >
                           <i className="fas fa-car"></i> My Cars
+                        </NavLink>
+                      </li>
+                      <li>
+                        <NavLink
+                          to="/recommendations"
+                          className={(navData) => (navData.isActive ? "active" : "")}
+                          onClick={mobileMenu}
+                        >
+                          <i className="fas fa-lightbulb"></i> My Recommendations
                         </NavLink>
                       </li>
                       </>
@@ -748,6 +487,71 @@ const HeaderOne = () => {
           </div>
         </div>
       </header>
+
+      {/* Login Banner for Non-Logged-In Users */}
+      {showLoginBanner && (
+        <div 
+          className="w-ful text-white" 
+          style={{ 
+            background: '#e8092e',
+            marginTop: '90px',
+            minHeight: '80px', 
+            padding: '14px', 
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+            position: 'sticky',
+            zIndex: 10,
+            top: 85,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          <div className="max-w-7xl mx-auto flex items-center justify-center flex-wrap gap-4" style={{ width: '100%' }}>
+            <div className="flex items-center gap-4 flex-1 justify-center">
+              <div className="flex-1" style={{ textAlign: 'center' }}>
+                <p style={{ fontWeight: '600', color: 'white', fontSize: '15px', marginBottom: '4px', lineHeight: '1.4' }}>
+                  Login to manage your cars and get personalized recommendations!
+                </p>
+                <p style={{ fontSize: '16px', color: 'white', lineHeight: '1.4' }}>
+                  Access exclusive features like car management and expert recommendations.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <Link 
+                to="/login" 
+                style={{
+                  backgroundColor: 'white',
+                  color: '#dc2626',
+                  padding: '8px 16px',
+                  borderRadius: '8px',
+                  fontWeight: '600',
+                  fontSize: '14px',
+                  textDecoration: 'none',
+                  whiteSpace: 'nowrap'
+                }}
+                onMouseOver={(e) => e.target.style.backgroundColor = '#fef2f2'}
+                onMouseOut={(e) => e.target.style.backgroundColor = 'white'}
+              >
+                Login Now
+              </Link>
+              <button
+                onClick={handleBannerDismiss}
+                style={{
+                  color: 'white',
+                  padding: '8px',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer'
+                }}
+                aria-label="Dismiss banner"
+              >
+                <i className="fas fa-times" style={{ fontSize: '18px' }}></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

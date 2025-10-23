@@ -48,11 +48,16 @@ router.get("/suppliers/:id", adminCtrl.getSupplierById);
 router.put("/suppliers/:id", adminCtrl.updateSupplier);
 router.delete("/suppliers/:id", adminCtrl.deleteSupplier);
 
-// Technicians (full CRUD + link spare parts)
+// Technicians (full CRUD)
 router.post("/technicians", adminCtrl.createTechnician);
 router.get("/technicians", adminCtrl.getAllTechnicians);
 router.get("/technicians/:id", adminCtrl.getTechnicianById);
 router.put("/technicians/:id", adminCtrl.updateTechnician);
 router.delete("/technicians/:id", adminCtrl.deleteTechnician);
+
+// Cars (admin management)
+router.get("/cars", adminCtrl.getAllCars);
+router.get("/cars/:id", adminCtrl.getCarById);
+router.delete("/cars/:id", adminCtrl.deleteCar);
 
 module.exports = router;

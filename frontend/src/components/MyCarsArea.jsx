@@ -177,6 +177,8 @@ const MyCarsArea = () => {
       newErrors.kilometrage = "Kilometrage is required";
     } else if (formData.kilometrage < 0) {
       newErrors.kilometrage = "Kilometrage cannot be negative";
+    } else if (editingCar && parseInt(formData.kilometrage) < editingCar.kilometrage) {
+      newErrors.kilometrage = `Kilometrage must be greater than or equal to current value (${editingCar.kilometrage} km)`;
     }
 
     setErrors(newErrors);
@@ -266,7 +268,8 @@ const MyCarsArea = () => {
       ? car.spareParts.map(sp => ({
           part: sp.part?._id || sp.part,
           changeMonth: sp.changeMonth,
-          changeYear: sp.changeYear
+          changeYear: sp.changeYear,
+          kilometrage: sp.kilometrage || 0 // Include existing kilometrage or default to 0
         }))
       : [];
     

@@ -63,7 +63,7 @@ const AdminLayout = ({ children }) => {
               <i className="fas fa-tools text-red-600 text-xl"></i>
             </div>
             <div className="flex items-center">
-              <h1 className="text-xl font-bold text-white">Admin Panel</h1>
+              <h1 className="text-xl font-bold text-white">Karhabty Admin</h1>
             </div>
           </div>
           <button
@@ -141,18 +141,6 @@ const AdminLayout = ({ children }) => {
             
             {/* Right Side */}
             <div className="flex items-center space-x-4">
-              {/* Notifications */}
-              <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors duration-200">
-                <i className="fas fa-bell text-lg"></i>
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                  3
-                </span>
-              </button>
-              
-              {/* Settings */}
-              <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors duration-200">
-                <i className="fas fa-cog text-lg"></i>
-              </button>
               
               {/* User Profile with Dropdown */}
               <div className="flex items-center pl-4 border-l border-gray-200">

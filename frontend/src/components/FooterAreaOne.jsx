@@ -18,39 +18,6 @@ const FooterAreaOne = () => {
                     <li>
                       <Link to="/about">About</Link>
                     </li>
-                    <li>
-                      <Link to="/team">Team</Link>
-                    </li>
-                    <li>
-                      <Link to="/contact">Faq</Link>
-                    </li>
-                    <li>
-                      <Link to="/contact">Privacy Policy</Link>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-xl-auto">
-              <div className="widget widget_nav_menu footer-widget">
-                <h3 className="widget_title">Services</h3>
-                <div className="menu-all-pages-container">
-                  <ul className="menu">
-                    <li>
-                      <Link to="/service">Mechanic Masters</Link>
-                    </li>
-                    <li>
-                      <Link to="/service">Speedy Auto Repair</Link>
-                    </li>
-                    <li>
-                      <Link to="/service">Mobile Car Repair</Link>
-                    </li>
-                    <li>
-                      <Link to="/service">Pro Auto Fix</Link>
-                    </li>
-                    <li>
-                      <Link to="/service">Precision Auto Works</Link>
-                    </li>
                   </ul>
                 </div>
               </div>
@@ -60,7 +27,7 @@ const FooterAreaOne = () => {
                 <h3 className="widget_title">Contact</h3>
                 <div className="widget-contact">
                   <p>
-                    <Link to="tel:888123456765">(+216) 27862415</Link>
+                    <Link to="tel:888123456765">(+216) 12345678</Link>
                   </p>
                   <p>
                     <Link to="mailto:infoname@mail.com">yessinhadded99@gmail.com</Link>
@@ -75,7 +42,7 @@ const FooterAreaOne = () => {
               <div className="widget footer-widget widget-newsletter">
                 <h3 className="widget_title">Get In Touch</h3>
                 <p className="footer-text mb-50">
-                  Lorem Ipsum is simply is dumiomy is text Lorem Ipsum is simply
+                  Reach out to us anytime!
                 </p>
                 <form className="newsletter-form">
                   <div className="form-group">

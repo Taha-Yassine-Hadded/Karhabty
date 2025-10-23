@@ -1,9 +1,15 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import SparePartsHistory from "./SparePartsHistory";
 import SparePartsRecommendations from "./SparePartsRecommendations";
 
-const SparePartsTabs = ({ spareParts, recommendedTechnicians }) => {
+const SparePartsTabs = ({ spareParts, recommendedTechnicians, currentCarKilometrage, carId }) => {
   const [activeTab, setActiveTab] = useState("history");
+  const navigate = useNavigate();
+
+  const handleViewAllRecommendations = () => {
+    navigate(`/recommendations?carId=${carId}`);
+  };
 
   return (
     <div className="spare-parts-tabs bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
@@ -68,7 +74,29 @@ const SparePartsTabs = ({ spareParts, recommendedTechnicians }) => {
               : "translate-x-full opacity-0 absolute inset-0"
           }`}
         >
-          <SparePartsRecommendations spareParts={spareParts} recommendedTechnicians={recommendedTechnicians} />
+          {/* View All Recommendations Button */}
+          <div className="p-4 bg-gradient-to-r from-red-50 to-orange-50 border-b border-gray-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 mb-1">
+                  <i className="fas fa-lightbulb text-red-600 mr-2"></i>
+                  Maintenance Recommendations
+                </h3>
+                <p className="text-sm text-gray-600">
+                  Get personalized recommendations based on your vehicle's usage patterns
+                </p>
+              </div>
+              <button
+                onClick={handleViewAllRecommendations}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2 font-semibold"
+              >
+                <i className="fas fa-external-link-alt"></i>
+                View All Recommendations
+              </button>
+            </div>
+          </div>
+          
+          <SparePartsRecommendations spareParts={spareParts} recommendedTechnicians={recommendedTechnicians} currentCarKilometrage={currentCarKilometrage} />
         </div>
       </div>
     </div>

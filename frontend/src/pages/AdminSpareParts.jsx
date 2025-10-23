@@ -5,7 +5,6 @@ import StatsCards from '../components/StatsCards';
 import SearchAndFilters from '../components/SearchAndFilters';
 import DataTable from '../components/DataTable';
 import Modal from '../components/Modal';
-import ImageUpload from '../components/ImageUpload';
 import api from '../utils/api';
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
@@ -22,12 +21,9 @@ const AdminSpareParts = () => {
     name: '',
     category: 'engine',
     brand: '',
-    price: '',
-    stock: '',
     lifespanKm: '',
     lifespanMonths: '',
-    suppliers: [],
-    img: ''
+    suppliers: []
   });
   const [formLoading, setFormLoading] = useState(false);
   const [allSuppliers, setAllSuppliers] = useState([]);
@@ -87,8 +83,6 @@ const AdminSpareParts = () => {
     try {
       const submitData = {
         ...formData,
-        price: parseFloat(formData.price) || 0,
-        stock: parseInt(formData.stock) || 0,
         lifespanKm: formData.lifespanKm ? parseInt(formData.lifespanKm) : undefined,
         lifespanMonths: formData.lifespanMonths ? parseInt(formData.lifespanMonths) : undefined,
         suppliers: selectedSuppliers.map((supplier) => supplier._id),
@@ -124,12 +118,9 @@ const AdminSpareParts = () => {
       name: part.name || '',
       category: part.category || 'engine',
       brand: part.brand || '',
-      price: part.price?.toString() || '',
-      stock: part.stock?.toString() || '',
       lifespanKm: part.lifespanKm?.toString() || '',
       lifespanMonths: part.lifespanMonths?.toString() || '',
-      suppliers: part.suppliers || [],
-      img: part.img || ''
+      suppliers: part.suppliers || []
     });
     
     // Set selected suppliers for editing
@@ -144,7 +135,6 @@ const AdminSpareParts = () => {
   const handleDelete = async (part) => {
     const result = await Swal.fire({
       title: 'Are you sure?',
-      text: `You are about to delete "${part.name}". This action cannot be undone!`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#dc2626',
@@ -170,12 +160,9 @@ const AdminSpareParts = () => {
       name: '',
       category: 'engine',
       brand: '',
-      price: '',
-      stock: '',
       lifespanKm: '',
       lifespanMonths: '',
-      suppliers: [],
-      img: ''
+      suppliers: []
     });
     setSelectedSuppliers([]);
   };
@@ -231,18 +218,16 @@ const AdminSpareParts = () => {
       textColor: 'text-purple-600',
     },
     {
-      label: 'Total Stock',
-      value: spareParts.reduce((sum, part) => sum + part.stock, 0),
-      icon: 'fa-boxes',
+      label: 'With Suppliers',
+      value: spareParts.filter(part => part.suppliers && part.suppliers.length > 0).length,
+      icon: 'fa-users',
       bgColor: 'bg-green-100',
       textColor: 'text-green-600',
     },
     {
-      label: 'Total Value',
-      value: `$${spareParts
-        .reduce((sum, part) => sum + part.price * part.stock, 0)
-        .toFixed(2)}`,
-      icon: 'fa-dollar-sign',
+      label: 'With Lifespan',
+      value: spareParts.filter(part => part.lifespanKm || part.lifespanMonths).length,
+      icon: 'fa-clock',
       bgColor: 'bg-orange-100',
       textColor: 'text-orange-600',
     },
@@ -264,17 +249,9 @@ const AdminSpareParts = () => {
       key: 'part',
       render: (part) => (
         <div className="flex items-center space-x-3">
-          {part.img ? (
-            <img
-              src={part.img.startsWith('http') ? part.img : `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}${part.img}`}
-              alt={part.name}
-              className="w-12 h-12 object-cover rounded-lg border"
-            />
-          ) : (
-            <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
-              <i className="fas fa-image text-gray-400"></i>
-            </div>
-          )}
+          <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
+            <i className="fas fa-cog text-gray-400"></i>
+          </div>
           <div>
             <div className="text-sm font-semibold text-gray-900">{part.name}</div>
             <div className="text-xs text-gray-500">{part.brand}</div>
@@ -292,27 +269,20 @@ const AdminSpareParts = () => {
       ),
     },
     {
-      header: 'Price & Lifespan',
-      key: 'price',
+      header: 'Lifespan',
+      key: 'lifespan',
       render: (part) => (
         <div>
-          <span className="text-sm font-medium text-gray-900">${part.price}</span>
           {part.lifespanKm && (
             <div className="text-xs text-gray-500">{part.lifespanKm} km</div>
           )}
           {part.lifespanMonths && (
             <div className="text-xs text-gray-500">{part.lifespanMonths} months</div>
           )}
+          {!part.lifespanKm && !part.lifespanMonths && (
+            <span className="text-xs text-gray-400">Not specified</span>
+          )}
         </div>
-      ),
-    },
-    {
-      header: 'Stock',
-      key: 'stock',
-      render: (part) => (
-        <span className="inline-flex px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
-          {part.stock} units
-        </span>
       ),
     },
     {
@@ -357,10 +327,7 @@ const AdminSpareParts = () => {
     onPageChange: handlePageChange,
   };
 
-  // Handle image upload
-  const handleImageUpload = (imageUrl) => {
-    setFormData({ ...formData, img: imageUrl });
-  };
+
 
   return (
     <AdminLayout>
@@ -412,20 +379,9 @@ const AdminSpareParts = () => {
         maxWidth="max-w-4xl"
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              <i className="fas fa-image mr-2 text-blue-600"></i>Part Image
-            </label>
-            <ImageUpload
-              onImageUpload={handleImageUpload}
-              currentImage={formData.img ? (formData.img.startsWith('http') ? formData.img : `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}${formData.img}`) : null}
-              className="mb-4"
-            />
-          </div>
-
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              <i className="fas fa-cog mr-2 text-blue-600"></i>Part Name *
+              <i className="fas fa-cog mr-2 text-gray-600"></i>Part Name *
             </label>
             <input
               type="text"
@@ -439,7 +395,7 @@ const AdminSpareParts = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              <i className="fas fa-tags mr-2 text-blue-600"></i>Category *
+              <i className="fas fa-tags mr-2 text-gray-600"></i>Category *
             </label>
             <select
               required
@@ -457,7 +413,7 @@ const AdminSpareParts = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              <i className="fas fa-trademark mr-2 text-blue-600"></i>Brand *
+              <i className="fas fa-trademark mr-2 text-gray-600"></i>Brand *
             </label>
             <input
               type="text"
@@ -471,38 +427,7 @@ const AdminSpareParts = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              <i className="fas fa-dollar-sign mr-2 text-blue-600"></i>Price *
-            </label>
-            <input
-              type="number"
-              step="0.01"
-              min="0"
-              required
-              value={formData.price}
-              onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="0.00"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              <i className="fas fa-boxes mr-2 text-blue-600"></i>Stock Quantity *
-            </label>
-            <input
-              type="number"
-              min="0"
-              required
-              value={formData.stock}
-              onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="0"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              <i className="fas fa-road mr-2 text-blue-600"></i>Lifespan (KM)
+              <i className="fas fa-road mr-2 text-gray-600"></i>Lifespan (KM)
             </label>
             <input
               type="number"
@@ -516,7 +441,7 @@ const AdminSpareParts = () => {
 
           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              <i className="fas fa-calendar mr-2 text-blue-600"></i>Lifespan (Months)
+              <i className="fas fa-calendar mr-2 text-gray-600"></i>Lifespan (Months)
             </label>
             <input
               type="number"
@@ -530,7 +455,7 @@ const AdminSpareParts = () => {
 
           <div className="md:col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              <i className="fas fa-users mr-2 text-blue-600"></i>Suppliers
+              <i className="fas fa-users mr-2 text-gray-600"></i>Suppliers
             </label>
             <MultiSelect 
               value={selectedSuppliers} 

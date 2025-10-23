@@ -10,22 +10,6 @@ const sparePartSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true
-  },
-  price: {
-    type: Number,
-    required: true,
-    min: 0
-  },
-  stock: {
-    type: Number,
-    required: true,
-    min: 0,
-    default: 0
-  },
-  img: {
-    type: String,
-    trim: true,
-    default: null
   }
 }, { timestamps: true });
 

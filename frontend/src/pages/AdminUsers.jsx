@@ -102,7 +102,6 @@ const AdminUsers = () => {
   const handleDelete = async (user) => {
     const result = await Swal.fire({
       title: 'Are you sure?',
-      text: `You are about to delete user "${user.name}". This action cannot be undone!`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#dc2626',
@@ -126,7 +125,6 @@ const AdminUsers = () => {
         
         Swal.fire({
           title: 'Deleted!',
-          text: `User "${user.name}" has been deleted.`,
           icon: 'success',
           timer: 2000,
           showConfirmButton: false,
@@ -144,7 +142,6 @@ const AdminUsers = () => {
         
         Swal.fire({
           title: 'Error!',
-          text: 'Failed to delete user. Please try again.',
           icon: 'error',
           customClass: {
             popup: 'rounded-lg'

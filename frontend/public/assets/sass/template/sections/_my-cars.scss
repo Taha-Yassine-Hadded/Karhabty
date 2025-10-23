@@ -915,38 +915,6 @@ select.form-input {
   }
 }
 
-// SweetAlert2 Custom Styling
-.swal2-popup-custom {
-  border-radius: 20px !important;
-  padding: 2em !important;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2) !important;
-}
-
-.swal2-html-custom {
-  margin: 1.25em 0 !important;
-  
-  p {
-    white-space: normal !important;
-    word-wrap: break-word !important;
-    display: block !important;
-  }
-}
-
-.swal2-confirm-custom,
-.swal2-cancel-custom {
-  border-radius: 25px !important;
-  padding: 12px 30px !important;
-  font-weight: 600 !important;
-  font-size: 15px !important;
-  min-width: 120px !important;
-  @include transition;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
-  }
-}
-
 // Responsive Design
 @media (max-width: 768px) {
   .sec-title-red {

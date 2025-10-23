@@ -1,55 +1,112 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const SparePartRecommendation = ({ sparePart, changeMonth, changeYear }) => {
-  // Calculate if replacement is needed
+const SparePartRecommendation = ({ sparePart, changeMonth, changeYear, kilometrage, currentCarKilometrage }) => {
+  // Calculate if replacement is needed based on both time and kilometrage
   const calculateRecommendation = () => {
-    if (!changeMonth || !changeYear || !sparePart.lifespanMonths) {
+    if (!changeMonth || !changeYear) {
       return null;
     }
 
-    const changeDate = new Date(changeYear, changeMonth - 1);
-    const now = new Date();
-    const monthsSinceChange = (now.getFullYear() - changeDate.getFullYear()) * 12 + 
-                              (now.getMonth() - changeDate.getMonth());
+    let timeRecommendation = null;
+    let kilometrageRecommendation = null;
 
-    const lifespanMonths = sparePart.lifespanMonths;
-    const percentUsed = (monthsSinceChange / lifespanMonths) * 100;
+    // Time-based recommendation
+    if (sparePart.lifespanMonths) {
+      const changeDate = new Date(changeYear, changeMonth - 1);
+      const now = new Date();
+      const monthsSinceChange = (now.getFullYear() - changeDate.getFullYear()) * 12 + 
+                                (now.getMonth() - changeDate.getMonth());
 
-    // Determine status
-    if (monthsSinceChange >= lifespanMonths) {
-      return {
+      const lifespanMonths = sparePart.lifespanMonths;
+      const timePercentUsed = (monthsSinceChange / lifespanMonths) * 100;
+
+      timeRecommendation = {
+        percentUsed: Math.min(Math.round(timePercentUsed), 100),
+        isOverdue: monthsSinceChange >= lifespanMonths
+      };
+    }
+
+    // Kilometrage-based recommendation
+    if (sparePart.lifespanKm && currentCarKilometrage && kilometrage !== undefined) {
+      const kmSinceChange = currentCarKilometrage - kilometrage;
+      const lifespanKm = sparePart.lifespanKm;
+      const kmPercentUsed = (kmSinceChange / lifespanKm) * 100;
+
+      kilometrageRecommendation = {
+        percentUsed: Math.min(Math.round(kmPercentUsed), 100),
+        isOverdue: kmSinceChange >= lifespanKm,
+        kmSinceChange,
+        lifespanKm
+      };
+    }
+
+    // Determine the most critical recommendation
+    let finalRecommendation = null;
+    let maxPercentUsed = 0;
+    let recommendationType = '';
+
+    if (timeRecommendation) {
+      maxPercentUsed = Math.max(maxPercentUsed, timeRecommendation.percentUsed);
+      if (timeRecommendation.percentUsed >= maxPercentUsed) {
+        recommendationType = 'time';
+      }
+    }
+
+    if (kilometrageRecommendation) {
+      maxPercentUsed = Math.max(maxPercentUsed, kilometrageRecommendation.percentUsed);
+      if (kilometrageRecommendation.percentUsed >= maxPercentUsed) {
+        recommendationType = 'kilometrage';
+      }
+    }
+
+    if (maxPercentUsed === 0) {
+      return null;
+    }
+
+    // Determine status based on highest percentage
+    const isOverdue = (timeRecommendation?.isOverdue) || (kilometrageRecommendation?.isOverdue);
+    
+    if (isOverdue || maxPercentUsed >= 100) {
+      finalRecommendation = {
         status: 'critical',
         message: 'Replacement Overdue!',
         color: 'red',
         icon: 'fa-exclamation-triangle',
         percentUsed: 100
       };
-    } else if (percentUsed >= 80) {
-      return {
+    } else if (maxPercentUsed >= 80) {
+      finalRecommendation = {
         status: 'warning',
         message: 'Replacement Recommended Soon',
         color: 'orange',
         icon: 'fa-exclamation-circle',
-        percentUsed: Math.round(percentUsed)
+        percentUsed: Math.round(maxPercentUsed)
       };
-    } else if (percentUsed >= 50) {
-      return {
+    } else if (maxPercentUsed >= 50) {
+      finalRecommendation = {
         status: 'caution',
         message: 'Monitor Condition',
         color: 'yellow',
         icon: 'fa-info-circle',
-        percentUsed: Math.round(percentUsed)
+        percentUsed: Math.round(maxPercentUsed)
       };
     } else {
-      return {
+      finalRecommendation = {
         status: 'good',
         message: 'In Good Condition',
         color: 'green',
         icon: 'fa-check-circle',
-        percentUsed: Math.round(percentUsed)
+        percentUsed: Math.round(maxPercentUsed)
       };
     }
+
+    // Add recommendation details
+    finalRecommendation.recommendationType = recommendationType;
+    finalRecommendation.timeRecommendation = timeRecommendation;
+    finalRecommendation.kilometrageRecommendation = kilometrageRecommendation;
+
+    return finalRecommendation;
   };
 
   const recommendation = calculateRecommendation();
@@ -100,9 +157,34 @@ const SparePartRecommendation = ({ sparePart, changeMonth, changeYear }) => {
       </div>
 
       {/* Lifespan Info */}
-      <div className="text-xs mb-3">
-        <i className="fas fa-clock mr-1"></i>
-        Recommended lifespan: {sparePart.lifespanMonths} months
+      <div className="text-xs mb-3 space-y-1">
+        {sparePart.lifespanMonths && (
+          <div>
+            <i className="fas fa-clock mr-1"></i>
+            Recommended lifespan: {sparePart.lifespanMonths} months
+            {recommendation.timeRecommendation && (
+              <span className="ml-2 text-gray-600">
+                ({recommendation.timeRecommendation.percentUsed}% time-based)
+              </span>
+            )}
+          </div>
+        )}
+        {sparePart.lifespanKm && (
+          <div>
+            <i className="fas fa-road mr-1"></i>
+            Recommended lifespan: {sparePart.lifespanKm.toLocaleString()} km
+            {recommendation.kilometrageRecommendation && (
+              <span className="ml-2 text-gray-600">
+                ({recommendation.kilometrageRecommendation.kmSinceChange?.toLocaleString() || 0} km used, {recommendation.kilometrageRecommendation.percentUsed}% km-based)
+              </span>
+            )}
+          </div>
+        )}
+        {recommendation.recommendationType && (
+          <div className="text-xs text-gray-500 italic">
+            Primary recommendation based on: {recommendation.recommendationType === 'time' ? 'Time usage' : 'Kilometrage usage'}
+          </div>
+        )}
       </div>
 
       {/* Action Buttons */}

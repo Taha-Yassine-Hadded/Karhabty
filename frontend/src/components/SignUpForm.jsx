@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../utils/api";
+import { toast } from "react-hot-toast";
 
 const SignUpForm = () => {
   const [formData, setFormData] = useState({
@@ -11,7 +12,6 @@ const SignUpForm = () => {
     role: "user", // Default role
     entrepriseName: "",
     address: "",
-    agreeTerms: false,
   });
 
   const [errors, setErrors] = useState({});
@@ -82,10 +82,6 @@ const SignUpForm = () => {
       }
     }
 
-    if (!formData.agreeTerms) {
-      newErrors.agreeTerms = "You must agree to the terms and conditions";
-    }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -109,12 +105,12 @@ const SignUpForm = () => {
         const response = await api.post("/api/auth/register", submitData);
 
         console.log("Registration successful:", response.data);
-        alert("Sign up successful!");
+        toast.success("Sign up successful!");
       } catch (error) {
         console.error("Registration error:", error);
         setErrors({
           ...errors,
-          api: error.response?.data?.message || "Registration failed. Please try again.",
+          api: error.response?.data?.msg || error.response?.data?.message || "Registration failed. Please try again.",
         });
       }
     }
@@ -281,26 +277,14 @@ const SignUpForm = () => {
                   )}
                 </div>
 
-                <div className="form-group checkbox-group">
-                  <label className="checkbox-label">
-                    <input
-                      type="checkbox"
-                      name="agreeTerms"
-                      checked={formData.agreeTerms}
-                      onChange={handleChange}
-                    />
-                    <span className="checkmark"></span>
-                    <span className="checkbox-text">
-                      I agree to the{" "}
-                      <Link to="/terms" className="terms-link">
-                        Terms and Conditions
-                      </Link>
-                    </span>
-                  </label>
-                  {errors.agreeTerms && (
-                    <span className="error-message">{errors.agreeTerms}</span>
-                  )}
-                </div>
+                {errors.api && (
+                  <div className="form-group">
+                    <div className="alert alert-danger" role="alert">
+                      <i className="fas fa-exclamation-triangle me-2"></i>
+                      {errors.api}
+                    </div>
+                  </div>
+                )}
 
                 <button type="submit" className="btn-signup">
                   Create Account

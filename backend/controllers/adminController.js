@@ -2,6 +2,7 @@ const User = require("../models/User");
 const SparePart = require("../models/SparePart");
 const Supplier = require("../models/Supplier");
 const Technician = require("../models/Technician");
+const Car = require("../models/Car");
 const bcrypt = require("bcryptjs");
 
 //
@@ -133,17 +134,14 @@ const createSparePart = async (req, res) => {
       name,
       category,
       brand,
-      price,
-      stock,
       lifespanKm,
       lifespanMonths,
       suppliers,
-      img
     } = req.body;
 
     // Validation
-    if (!name || !category || !brand || price === undefined || stock === undefined) {
-      return res.status(400).json({ msg: "Please fill all required fields (name, category, brand, price, stock)" });
+    if (!name || !category || !brand === undefined) {
+      return res.status(400).json({ msg: "Please fill all required fields (name, category, brand)" });
     }
 
     // Create spare part
@@ -151,12 +149,9 @@ const createSparePart = async (req, res) => {
       name: name.trim(),
       category,
       brand: brand.trim(),
-      price: parseFloat(price),
-      stock: parseInt(stock) || 0,
       lifespanKm: lifespanKm ? parseInt(lifespanKm) : undefined,
       lifespanMonths: lifespanMonths ? parseInt(lifespanMonths) : undefined,
       suppliers: suppliers || [],
-      img: img || null // Handle the image field
     });
 
     await sparePart.save();
@@ -211,12 +206,9 @@ const updateSparePart = async (req, res) => {
       name,
       category,
       brand,
-      price,
-      stock,
       lifespanKm,
       lifespanMonths,
       suppliers,
-      img
     } = req.body;
 
     // Find existing part
@@ -258,12 +250,9 @@ const updateSparePart = async (req, res) => {
       name: name ? name.trim() : existingPart.name,
       category: category || existingPart.category,
       brand: brand ? brand.trim() : existingPart.brand,
-      price: price !== undefined ? parseFloat(price) : existingPart.price,
-      stock: stock !== undefined ? parseInt(stock) : existingPart.stock,
       lifespanKm: lifespanKm !== undefined ? (lifespanKm ? parseInt(lifespanKm) : null) : existingPart.lifespanKm,
       lifespanMonths: lifespanMonths !== undefined ? (lifespanMonths ? parseInt(lifespanMonths) : null) : existingPart.lifespanMonths,
       suppliers: newSuppliers,
-      img: img !== undefined ? img : existingPart.img // Properly handle img field updates
     };
 
     const updated = await SparePart.findByIdAndUpdate(
@@ -542,6 +531,75 @@ const deleteTechnician = async (req, res) => {
   }
 };
 
+//
+// CARS MANAGEMENT
+//
+const getAllCars = async (req, res) => {
+  try {
+    const cars = await Car.find()
+      .populate('owner', 'name email role')
+      .populate({
+        path: 'spareParts.part',
+        select: 'name price category brand'
+      })
+      .sort({ createdAt: -1 });
+    res.json(cars);
+  } catch (err) {
+    res.status(500).json({ msg: "Server error", error: err.message });
+  }
+};
+
+const getCarById = async (req, res) => {
+  try {
+    const car = await Car.findById(req.params.id)
+      .populate('owner', 'name email role')
+      .populate({
+        path: 'spareParts.part',
+        select: 'name price category brand lifespanMonths lifespanKm stock',
+        populate: {
+          path: 'suppliers',
+          select: 'name email phone address website'
+        }
+      });
+
+    if (!car) {
+      return res.status(404).json({ msg: "Car not found" });
+    }
+
+    res.json(car);
+  } catch (err) {
+    if (err.kind === "ObjectId") {
+      return res.status(404).json({ msg: "Car not found" });
+    }
+    res.status(500).json({ msg: "Server error", error: err.message });
+  }
+};
+
+const deleteCar = async (req, res) => {
+  try {
+    const car = await Car.findById(req.params.id);
+    
+    if (!car) {
+      return res.status(404).json({ msg: "Car not found" });
+    }
+
+    // Remove car from user's cars array
+    await User.findByIdAndUpdate(car.owner, {
+      $pull: { cars: car._id }
+    });
+
+    // Delete the car
+    await Car.findByIdAndDelete(req.params.id);
+
+    res.json({ msg: "Car deleted successfully" });
+  } catch (err) {
+    if (err.kind === "ObjectId") {
+      return res.status(404).json({ msg: "Car not found" });
+    }
+    res.status(500).json({ msg: "Error deleting car", error: err.message });
+  }
+};
+
 module.exports = {
   // users
   getAllUsers,
@@ -569,4 +627,9 @@ module.exports = {
   getTechnicianById,
   updateTechnician,
   deleteTechnician,
+
+  // cars
+  getAllCars,
+  getCarById,
+  deleteCar,
 };

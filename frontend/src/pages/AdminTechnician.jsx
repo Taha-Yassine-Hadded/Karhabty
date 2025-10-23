@@ -20,7 +20,6 @@ const AdminTechnician = () => {
   const [formData, setFormData] = useState({
     name: '',
     speciality: 'mechanic',
-    cars: [],
     email: '',
     phone: '',
     address: '',
@@ -39,7 +38,7 @@ const AdminTechnician = () => {
     { value: 'electrician', label: 'Electrician' }
   ];
 
-    // Car brands list (comprehensive list of 100+ brands)
+  // Car brands list (comprehensive list of 100+ brands)
   const carBrandOptions = [
     // American Brands
     'Ford', 'Chevrolet', 'GMC', 'Dodge', 'Ram', 'Jeep', 
@@ -138,29 +137,10 @@ const AdminTechnician = () => {
     setFormLoading(true);
 
     try {
-      // Debug: Log the selected cars to see their structure
-      console.log('Selected cars:', selectedCars);
-      
-      // Fix the mapping - handle both object and string formats
-      const carsArray = selectedCars.map(car => {
-        if (typeof car === 'string') {
-          return car;
-        } else if (car && car.value) {
-          return car.value;
-        } else if (car && car.name) {
-          return car.name;
-        } else {
-          console.warn('Unexpected car format:', car);
-          return null;
-        }
-      }).filter(Boolean); // Remove any null values
-
       const submitData = {
         ...formData,
-        cars: carsArray
+        cars: selectedCars // Now always an array of strings
       };
-
-      console.log('Submit data:', submitData);
 
       if (editingTechnician) {
         await api.put(`/api/admin/technicians/${editingTechnician._id}`, submitData);
@@ -191,19 +171,14 @@ const AdminTechnician = () => {
     setFormData({
       name: technician.name || '',
       speciality: technician.speciality || 'mechanic',
-      cars: technician.cars || [],
       email: technician.email || '',
       phone: technician.phone || '',
       address: technician.address || '',
       website: technician.website || ''
     });
     
-    // Set selected cars for editing (ensure correct format for MultiSelect)
-    const selected = (technician.cars || []).map(car => {
-      if (typeof car === 'object' && car.value && car.name) return car;
-      return { name: car, value: car };
-    });
-    setSelectedCars(selected);
+    // Set selected cars as array of strings for MultiSelect pre-selection
+    setSelectedCars(technician.cars || []);
     setShowModal(true);
   };
 
@@ -234,7 +209,6 @@ const AdminTechnician = () => {
     setFormData({
       name: '',
       speciality: 'mechanic',
-      cars: [],
       email: '',
       phone: '',
       address: '',
@@ -275,7 +249,6 @@ const AdminTechnician = () => {
     setCurrentPage(1);
   };
 
-  // Stats data for StatsCards component
   const statsData = [
     {
       label: 'Total Technicians',
@@ -443,7 +416,7 @@ const AdminTechnician = () => {
         <div className="grid grid-cols-1 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              <i className="fas fa-user mr-2 text-blue-600"></i>Technician Name *
+              <i className="fas fa-user mr-2 text-gray-600"></i>Technician Name *
             </label>
             <input
               type="text"
@@ -457,7 +430,7 @@ const AdminTechnician = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              <i className="fas fa-tools mr-2 text-blue-600"></i>Speciality *
+              <i className="fas fa-tools mr-2 text-gray-600"></i>Speciality *
             </label>
             <select
               required
@@ -475,14 +448,14 @@ const AdminTechnician = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              <i className="fas fa-car mr-2 text-blue-600"></i>Car Brands Specialized In
+              <i className="fas fa-car mr-2 text-gray-600"></i>Car Brands Specialized In
             </label>
             <MultiSelect 
               value={selectedCars} 
               onChange={(e) => setSelectedCars(e.value)} 
               options={carBrandOptions} 
               optionLabel="name" 
-              optionValue="value" // Ensure this matches the value property used in carBrandOptions
+              optionValue="value"
               display="chip"
               filter 
               filterDelay={400} 
@@ -499,7 +472,7 @@ const AdminTechnician = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              <i className="fas fa-envelope mr-2 text-blue-600"></i>Email
+              <i className="fas fa-envelope mr-2 text-gray-600"></i>Email
             </label>
             <input
               type="email"
@@ -511,7 +484,7 @@ const AdminTechnician = () => {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              <i className="fas fa-phone mr-2 text-blue-600"></i>Phone
+              <i className="fas fa-phone mr-2 text-gray-600"></i>Phone
             </label>
             <input
               type="text"
@@ -523,7 +496,7 @@ const AdminTechnician = () => {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              <i className="fas fa-map-marker-alt mr-2 text-blue-600"></i>Address
+              <i className="fas fa-map-marker-alt mr-2 text-gray-600"></i>Address
             </label>
             <input
               type="text"
@@ -535,7 +508,7 @@ const AdminTechnician = () => {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              <i className="fas fa-globe mr-2 text-blue-600"></i>Website
+              <i className="fas fa-globe mr-2 text-gray-600"></i>Website
             </label>
             <input
               type="text"
