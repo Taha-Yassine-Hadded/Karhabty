@@ -149,9 +149,41 @@ pipeline {
                     echo "Waiting for services to be healthy..."
                     sleep 30
                     
-                    // Health check using docker exec
                     sh '''
-                        docker exec backend curl -f http://localhost:5000/health || exit 1
+                        echo "Checking backend health..."
+                        docker exec backend node -e "
+                        const http = require('http');
+                        const options = {
+                            hostname: 'localhost',
+                            port: 5000,
+                            path: '/health',
+                            method: 'GET',
+                            timeout: 5000
+                        };
+                        
+                        const req = http.request(options, (res) => {
+                            if (res.statusCode === 200) {
+                                console.log('✓ Backend health check passed');
+                                process.exit(0);
+                            } else {
+                                console.log('✗ Health check failed with status:', res.statusCode);
+                                process.exit(1);
+                            }
+                        });
+                        
+                        req.on('error', (error) => {
+                            console.error('✗ Health check error:', error.message);
+                            process.exit(1);
+                        });
+                        
+                        req.on('timeout', () => {
+                            console.error('✗ Health check timeout');
+                            req.destroy();
+                            process.exit(1);
+                        });
+                        
+                        req.end();
+                        "
                     '''
                     
                     echo "Backend is healthy!"
