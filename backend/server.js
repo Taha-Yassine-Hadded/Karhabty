@@ -13,6 +13,21 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+// Add metrics middleware EARLY - before routes
+const { 
+  requestMetricsMiddleware, 
+  metricsEndpoint 
+} = require('./metrics');
+
+app.use(requestMetricsMiddleware);
+
+// Metrics endpoint (should be accessible without auth)
+app.get('/metrics', metricsEndpoint);
+
+// Health check endpoint
+const healthRoute = require('./routes/health');
+app.use('/', healthRoute);
+
 // Serve static files from uploads directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
@@ -28,16 +43,6 @@ app.use("/api/cars", carRoutes);
 
 const publicRoutes = require("./routes/publicRoutes");
 app.use("/api/public", publicRoutes);
-
-const healthRoute = require('./routes/health');
-app.use('/', healthRoute);
-
-const { register } = require('./metrics');
-
-app.get('/metrics', async (req, res) => {
-  res.set('Content-Type', register.contentType);
-  res.end(await register.metrics());
-});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
