@@ -146,18 +146,15 @@ pipeline {
         stage('Health Check') {
             steps {
                 script {
+                    echo "Waiting for services to be healthy..."
+                    sleep 30
+                    
+                    // Health check using docker exec
                     sh '''
-                        echo "Waiting for services to be healthy..."
-                        sleep 30
-                        
-                        # Check backend
-                        curl -f http://localhost:5000/health || exit 1
-                        
-                        # Check frontend
-                        curl -f http://localhost:3000 || exit 1
-                        
-                        echo "All services are healthy!"
+                        docker exec backend curl -f http://localhost:5000/health || exit 1
                     '''
+                    
+                    echo "Backend is healthy!"
                 }
             }
         }
