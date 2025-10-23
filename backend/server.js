@@ -29,5 +29,15 @@ app.use("/api/cars", carRoutes);
 const publicRoutes = require("./routes/publicRoutes");
 app.use("/api/public", publicRoutes);
 
+const healthRoute = require('./routes/health');
+app.use('/', healthRoute);
+
+const { register } = require('./metrics');
+
+app.get('/metrics', async (req, res) => {
+  res.set('Content-Type', register.contentType);
+  res.end(await register.metrics());
+});
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

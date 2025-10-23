@@ -13,12 +13,15 @@ node_modules/
 # Ignore build directories
 /dist/
 /build/
+*/build/
+*/dist/
 
 # Ignore environment variables
-#.env
+.env
 .env.local
 .env.development
 .env.production
+.env.*.local
 
 # Ignore IDE/editor files
 .vscode/
@@ -31,6 +34,10 @@ Thumbs.db
 # Ignore logs
 *.log
 logs/
+
+# Coverage
+coverage/
+.nyc_output/
 
 # Ignore dependency directories
 */node_modules/
@@ -55,3 +62,16 @@ frontend/node_modules/
 # backend/.env
 backend/node_modules/
 backend/.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Docker volumes
+mongo-data/
