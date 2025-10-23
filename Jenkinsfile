@@ -11,6 +11,7 @@ pipeline {
         SONARQUBE_ENV = 'SonarQube'
         APP_NAME = 'my-react-nodejs-app'
         VERSION = "${BUILD_NUMBER}"
+        SONAR_HOST_URL = 'http://sonarqube:9000'
     }
     
     stages {
@@ -65,31 +66,55 @@ pipeline {
         }
         
         stage('SonarQube Analysis') {
-            when {
-                expression { return false } // Temporarily disabled
-            }
             steps {
                 script {
-                    def scannerHome = tool 'SonarQubeScanner'
-                    withSonarQubeEnv("${SONARQUBE_ENV}") {
-                        sh """
-                            ${scannerHome}/bin/sonar-scanner \
-                            -Dsonar.projectKey=${APP_NAME} \
-                            -Dsonar.sources=. \
-                            -Dsonar.host.url=http://sonarqube:9000
-                        """
+                    // Backend Analysis
+                    dir('backend') {
+                        withSonarQubeEnv("${SONARQUBE_ENV}") {
+                            sh """
+                                sonar-scanner \
+                                -Dsonar.projectKey=${APP_NAME}-backend \
+                                -Dsonar.projectName="${APP_NAME} Backend" \
+                                -Dsonar.sources=. \
+                                -Dsonar.exclusions=**/node_modules/**,**/coverage/**,**/*.test.js \
+                                -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+                                -Dsonar.host.url=${SONAR_HOST_URL}
+                            """
+                        }
+                    }
+                    
+                    // Frontend Analysis
+                    dir('frontend') {
+                        withSonarQubeEnv("${SONARQUBE_ENV}") {
+                            sh """
+                                sonar-scanner \
+                                -Dsonar.projectKey=${APP_NAME}-frontend \
+                                -Dsonar.projectName="${APP_NAME} Frontend" \
+                                -Dsonar.sources=src \
+                                -Dsonar.exclusions=**/node_modules/**,**/build/**,**/coverage/**,**/*.test.js,**/*.spec.js \
+                                -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+                                -Dsonar.host.url=${SONAR_HOST_URL}
+                            """
+                        }
                     }
                 }
             }
         }
         
         stage('Quality Gate') {
-            when {
-                expression { return false } // Temporarily disabled
-            }
             steps {
                 timeout(time: 5, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: false
+                    script {
+                        // Wait for quality gate result
+                        def qg = waitForQualityGate()
+                        if (qg.status != 'OK') {
+                            echo "Quality Gate failed: ${qg.status}"
+                            // Don't fail the build, just warn
+                            unstable(message: "Quality Gate failed")
+                        } else {
+                            echo "Quality Gate passed!"
+                        }
+                    }
                 }
             }
         }
@@ -194,7 +219,6 @@ pipeline {
     
     post {
         always {
-            // Use deleteDir() instead of cleanWs() - it's a built-in step
             deleteDir()
         }
         success {
