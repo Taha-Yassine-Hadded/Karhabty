@@ -155,7 +155,8 @@ pipeline {
     
     post {
         always {
-            cleanWs()
+            // Use deleteDir() instead of cleanWs() - it's a built-in step
+            deleteDir()
         }
         success {
             echo 'Pipeline completed successfully!'
