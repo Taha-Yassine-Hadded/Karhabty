@@ -26,14 +26,14 @@ pipeline {
                 stage('Backend Dependencies') {
                     steps {
                         dir('backend') {
-                            sh 'npm ci'
+                            sh 'npm install'
                         }
                     }
                 }
                 stage('Frontend Dependencies') {
                     steps {
                         dir('frontend') {
-                            sh 'npm ci'
+                            sh 'npm install'
                         }
                     }
                 }
@@ -46,9 +46,13 @@ pipeline {
                     steps {
                         dir('backend') {
                             script {
-                                // Skip tests if test script doesn't exist
-                                def packageJson = readJSON file: 'package.json'
-                                if (packageJson.scripts?.test) {
+                                // Check if test script exists using shell command
+                                def hasTests = sh(
+                                    script: 'grep -q \'"test"\' package.json && echo "true" || echo "false"',
+                                    returnStdout: true
+                                ).trim()
+                                
+                                if (hasTests == 'true') {
                                     sh 'npm test -- --coverage --passWithNoTests || true'
                                 } else {
                                     echo 'No test script found, skipping tests'
