@@ -154,4 +154,4 @@ networks:
     driver: bridge
   app-network:
     external: true
-    name: my-react-nodejs-pipeline_app-network
+    name: karhabty_app-network
