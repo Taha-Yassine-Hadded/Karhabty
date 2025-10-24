@@ -9,7 +9,7 @@ pipeline {
         DOCKER_REGISTRY = 'localhost:8082'
         DOCKER_CREDENTIALS_ID = 'nexus-credentials'
         SONARQUBE_ENV = 'SonarQube'
-        APP_NAME = 'my-react-nodejs-app'
+        APP_NAME = 'karhabty'
         // Better versioning: semantic version with timestamp
         VERSION = "1.0.${BUILD_NUMBER}-${new Date().format('yyyyMMdd-HHmmss')}"
         SONAR_HOST_URL = 'http://sonarqube:9000'
@@ -79,8 +79,8 @@ pipeline {
                         withSonarQubeEnv("${SONARQUBE_ENV}") {
                             sh """
                                 sonar-scanner \
-                                -Dsonar.projectKey=${APP_NAME}-backend \
-                                -Dsonar.projectName="${APP_NAME} Backend" \
+                                -Dsonar.projectKey=karhabty-backend \
+                                -Dsonar.projectName="Karhabty Backend" \
                                 -Dsonar.projectVersion=${VERSION} \
                                 -Dsonar.sources=. \
                                 -Dsonar.exclusions=**/node_modules/**,**/coverage/**,**/*.test.js \
@@ -95,8 +95,8 @@ pipeline {
                         withSonarQubeEnv("${SONARQUBE_ENV}") {
                             sh """
                                 sonar-scanner \
-                                -Dsonar.projectKey=${APP_NAME}-frontend \
-                                -Dsonar.projectName="${APP_NAME} Frontend" \
+                                -Dsonar.projectKey=karhabty-frontend \
+                                -Dsonar.projectName="Karhabty Frontend" \
                                 -Dsonar.projectVersion=${VERSION} \
                                 -Dsonar.sources=src \
                                 -Dsonar.exclusions=**/node_modules/**,**/build/**,**/coverage/**,**/*.test.js,**/*.spec.js \
@@ -143,8 +143,8 @@ pipeline {
                     steps {
                         script {
                             dir('backend') {
-                                docker.build("${DOCKER_REGISTRY}/${APP_NAME}-backend:${VERSION}")
-                                docker.build("${DOCKER_REGISTRY}/${APP_NAME}-backend:latest")
+                                docker.build("${DOCKER_REGISTRY}/karhabty-backend:${VERSION}")
+                                docker.build("${DOCKER_REGISTRY}/karhabty-backend:latest")
                             }
                         }
                     }
@@ -153,8 +153,8 @@ pipeline {
                     steps {
                         script {
                             dir('frontend') {
-                                docker.build("${DOCKER_REGISTRY}/${APP_NAME}-frontend:${VERSION}")
-                                docker.build("${DOCKER_REGISTRY}/${APP_NAME}-frontend:latest")
+                                docker.build("${DOCKER_REGISTRY}/karhabty-frontend:${VERSION}")
+                                docker.build("${DOCKER_REGISTRY}/karhabty-frontend:latest")
                             }
                         }
                     }
@@ -167,10 +167,10 @@ pipeline {
                 script {
                     docker.withRegistry("http://${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS_ID}") {
                         // Push versioned images
-                        docker.image("${DOCKER_REGISTRY}/${APP_NAME}-backend:${VERSION}").push()
-                        docker.image("${DOCKER_REGISTRY}/${APP_NAME}-backend:latest").push()
-                        docker.image("${DOCKER_REGISTRY}/${APP_NAME}-frontend:${VERSION}").push()
-                        docker.image("${DOCKER_REGISTRY}/${APP_NAME}-frontend:latest").push()
+                        docker.image("${DOCKER_REGISTRY}/karhabty-backend:${VERSION}").push()
+                        docker.image("${DOCKER_REGISTRY}/karhabty-backend:latest").push()
+                        docker.image("${DOCKER_REGISTRY}/karhabty-frontend:${VERSION}").push()
+                        docker.image("${DOCKER_REGISTRY}/karhabty-frontend:latest").push()
                     }
                     echo "Pushed images with version: ${VERSION}"
                 }
@@ -299,10 +299,10 @@ pipeline {
                                 
                                 <h3>Docker Images Pushed to Nexus:</h3>
                                 <ul>
-                                    <li>${env.DOCKER_REGISTRY}/${env.APP_NAME}-backend:${env.VERSION}</li>
-                                    <li>${env.DOCKER_REGISTRY}/${env.APP_NAME}-frontend:${env.VERSION}</li>
-                                    <li>${env.DOCKER_REGISTRY}/${env.APP_NAME}-backend:latest</li>
-                                    <li>${env.DOCKER_REGISTRY}/${env.APP_NAME}-frontend:latest</li>
+                                    <li>${env.DOCKER_REGISTRY}/karhabty-backend:${env.VERSION}</li>
+                                    <li>${env.DOCKER_REGISTRY}/karhabty-frontend:${env.VERSION}</li>
+                                    <li>${env.DOCKER_REGISTRY}/karhabty-backend:latest</li>
+                                    <li>${env.DOCKER_REGISTRY}/karhabty-frontend:latest</li>
                                 </ul>
                                 
                                 <h3>Links:</h3>
