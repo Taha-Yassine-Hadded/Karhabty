@@ -155,8 +155,8 @@ const HeaderOne = () => {
                     </Link>
                   </div>
                 </div>
-                <div className="col-auto">
-                  <nav className="main-menu d-none d-lg-inline-block">
+                <div className="col d-none d-lg-block" style={{ marginLeft: '200px' }}>
+                  <nav className="main-menu" style={{ marginLeft: '15px', position: 'relative', zIndex: '999' }}>
                     <ul>
                       <li>
                         <NavLink
@@ -244,7 +244,7 @@ const HeaderOne = () => {
                     </button>
                   </div>
                 </div>
-                <div className="col-auto ms-auto">
+                <div className="col-auto ms-auto" style={{ marginRight: '20px' }}>
                   <div className="navbar-right-desc">
                     {user ? (
                       <div className="user-profile-dropdown">
